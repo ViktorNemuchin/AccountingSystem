@@ -1,0 +1,13 @@
+Z:\new\AccountTestProject\AccountsTestP.Service\obj\Release\netcoreapp3.0\AccountsTestP.Service.csprojAssemblyReference.cache
+Z:\new\AccountTestProject\AccountsTestP.Service\obj\Release\netcoreapp3.0\AccountsTestP.Service.AssemblyInfoInputs.cache
+Z:\new\AccountTestProject\AccountsTestP.Service\obj\Release\netcoreapp3.0\AccountsTestP.Service.AssemblyInfo.cs
+Z:\new\AccountTestProject\AccountsTestP.Service\bin\Release\netcoreapp3.0\AccountsTestP.Service.deps.json
+Z:\new\AccountTestProject\AccountsTestP.Service\bin\Release\netcoreapp3.0\AccountsTestP.Service.dll
+Z:\new\AccountTestProject\AccountsTestP.Service\bin\Release\netcoreapp3.0\AccountsTestP.Service.pdb
+Z:\new\AccountTestProject\AccountsTestP.Service\bin\Release\netcoreapp3.0\AccountsTestP.Data.dll
+Z:\new\AccountTestProject\AccountsTestP.Service\bin\Release\netcoreapp3.0\AccountsTestP.Domain.dll
+Z:\new\AccountTestProject\AccountsTestP.Service\bin\Release\netcoreapp3.0\AccountsTestP.Domain.pdb
+Z:\new\AccountTestProject\AccountsTestP.Service\bin\Release\netcoreapp3.0\AccountsTestP.Data.pdb
+Z:\new\AccountTestProject\AccountsTestP.Service\obj\Release\netcoreapp3.0\AccountsTestP.Service.csproj.CopyComplete
+Z:\new\AccountTestProject\AccountsTestP.Service\obj\Release\netcoreapp3.0\AccountsTestP.Service.dll
+Z:\new\AccountTestProject\AccountsTestP.Service\obj\Release\netcoreapp3.0\AccountsTestP.Service.pdb
