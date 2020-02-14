@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AccountsTestP.Domain.Dtos;
+﻿using AccountsTestP.Domain.Dtos;
+using System;
 
 namespace AccountsTestP.Domain.Queries
 {
-    public class GetAccountQuery: QueryBase<AccountDto>
+    public class GetAccountQuery : QueryBase<AccountDto>
     {
         GetAccountQuery() { }
-        public GetAccountQuery(int accountId) 
+        public GetAccountQuery(int accountNumber)
         {
-            AccountId = accountId;
+            AccountNumber = accountNumber;
         }
-        public int AccountId { get; set; }
+        public int AccountNumber { get; set; }
     }
 }

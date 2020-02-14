@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using AccountsTestP.Data.IRepositories;
 using AccountsTestP.Domain.Dtos;
 using AccountsTestP.Domain.Queries;
 using AccountsTestP.Service.Dxos;
-using AccountsTestP.Data.IRepositories;
 using MediatR;
-using System.Threading.Tasks;
-using System.Threading;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace AccountsTestP.Service.Services
 {
-    public class GetAccountHistoryHandler:IRequestHandler<GetAccountHistoryQuery, ResponseBaseDto>
+    public class GetAccountHistoryHandler : IRequestHandler<GetAccountHistoryQuery, ResponseBaseDto>
     {
         private readonly IAccountsHistoryRepository _accountsHistoryRepository;
         private readonly IAccountHistoryDxos _accountHistoryDxos;
-        public GetAccountHistoryHandler(IAccountsHistoryRepository accountsHistoryRepository, IAccountHistoryDxos accountHistoryDxos) 
+        public GetAccountHistoryHandler(IAccountsHistoryRepository accountsHistoryRepository, IAccountHistoryDxos accountHistoryDxos)
         {
             _accountHistoryDxos = accountHistoryDxos;
             _accountsHistoryRepository = accountsHistoryRepository;
@@ -25,10 +23,10 @@ namespace AccountsTestP.Service.Services
         public async Task<ResponseBaseDto> Handle(GetAccountHistoryQuery request, CancellationToken cancellationToken)
         {
             var accountEntryList = await _accountsHistoryRepository.GetListAsync(request.AccountId);
-            if (accountEntryList.Count != 0) 
+            if (accountEntryList.Count != 0)
             {
                 var accountHistoryDtoList = new List<AccountHistoryDto>();
-                foreach (var entry in accountEntryList) 
+                foreach (var entry in accountEntryList)
                 {
                     accountHistoryDtoList.Add(_accountHistoryDxos.MapAccountHistoryDto(entry));
                 };
@@ -36,7 +34,7 @@ namespace AccountsTestP.Service.Services
                 return new ResponseOkDto<List<AccountHistoryDto>>
                 {
                     Status = "Ok",
-                    Result = accountHistoryDtoList.ToList()         
+                    Result = accountHistoryDtoList.ToList()
                 };
             }
             return null;

@@ -13,3 +13,11 @@ Z:\new\AccountTestProject\AccountsTestP.Domain\obj\Debug\netcoreapp3.0\AccountsT
 Z:\new\AccountTestProject\AccountsTestP.Domain\obj\Debug\netcoreapp3.0\AccountsTestP.Domain.AssemblyInfo.cs
 Z:\new\AccountTestProject\AccountsTestP.Domain\obj\Debug\netcoreapp3.0\AccountsTestP.Domain.dll
 Z:\new\AccountTestProject\AccountsTestP.Domain\obj\Debug\netcoreapp3.0\AccountsTestP.Domain.pdb
+Z:\AccountingSystem\accounting_system\AccountsTestP.Domain\bin\Debug\netcoreapp3.0\AccountsTestP.Domain.deps.json
+Z:\AccountingSystem\accounting_system\AccountsTestP.Domain\bin\Debug\netcoreapp3.0\AccountsTestP.Domain.dll
+Z:\AccountingSystem\accounting_system\AccountsTestP.Domain\bin\Debug\netcoreapp3.0\AccountsTestP.Domain.pdb
+Z:\AccountingSystem\accounting_system\AccountsTestP.Domain\obj\Debug\netcoreapp3.0\AccountsTestP.Domain.csprojAssemblyReference.cache
+Z:\AccountingSystem\accounting_system\AccountsTestP.Domain\obj\Debug\netcoreapp3.0\AccountsTestP.Domain.AssemblyInfoInputs.cache
+Z:\AccountingSystem\accounting_system\AccountsTestP.Domain\obj\Debug\netcoreapp3.0\AccountsTestP.Domain.AssemblyInfo.cs
+Z:\AccountingSystem\accounting_system\AccountsTestP.Domain\obj\Debug\netcoreapp3.0\AccountsTestP.Domain.dll
+Z:\AccountingSystem\accounting_system\AccountsTestP.Domain\obj\Debug\netcoreapp3.0\AccountsTestP.Domain.pdb

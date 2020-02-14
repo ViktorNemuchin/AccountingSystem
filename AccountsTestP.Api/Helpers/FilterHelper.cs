@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AccountsTestP.Domain.Dtos;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace AccountsTestP.Api.Helpers
@@ -24,11 +18,11 @@ namespace AccountsTestP.Api.Helpers
                 context.ExceptionHandled = true;
             }
         }
-        public void NoContentHandling(ActionExecutedContext context) 
+        public void NoContentHandling(ActionExecutedContext context)
         {
             var result = context.Result as ObjectResult;
-            
-            if (result.Value ==null)
+
+            if (result.Value == null)
             {
                 context.Result = new ObjectResult(context.Result)
                 {

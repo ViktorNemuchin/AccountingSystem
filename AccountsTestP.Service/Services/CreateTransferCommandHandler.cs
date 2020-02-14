@@ -4,9 +4,6 @@ using AccountsTestP.Domain.Dtos;
 using AccountsTestP.Domain.Queries;
 using AccountsTestP.Service.Helper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,32 +24,44 @@ namespace AccountsTestP.Service.Services
             _helper = new AccountHistoryHelper(_accountRepository, _accountsHistoryRepository);
         }
 
-        public async Task<ResponseBaseDto> Handle(CreateTransferAccountCommand request, CancellationToken cancellationToken) 
+        public async Task<ResponseBaseDto> Handle(CreateTransferAccountCommand request, CancellationToken cancellationToken)
         {
-            var sourceAccount = _mediator.Send(new GetAccountQuery(request.SourceAccountId)).Result;
-            if (sourceAccount == null)
-                return null;
+            bool sourceIsPresent =true;
+            bool destinationIsPresent = true;
+            var sourceAccount = _mediator.Send(new GetAccountQuery(request.SourceAccountNumber)).Result;
+            if (sourceAccount == null) 
+            {
+                sourceAccount = new AccountDto
+                {
+                    AccountNumber = request.SourceAccountNumber,
+                    AccountType = request.SourceAccountType,
+                    Balance = 0M,
+                    DocumentId = request.DocumentId
+                };
+                sourceIsPresent = false;
+            }
+                
 
-            var destinationAccount = _mediator.Send(new GetAccountQuery(request.DestinationAccountId)).Result;
+            var destinationAccount = _mediator.Send(new GetAccountQuery(request.DestinationAccountNumber)).Result;
             if (destinationAccount == null)
-                return null;
-
-            var withdrawAccount = await _helper.FormAccountEntryResponse(sourceAccount, request.Amount, false);
-            if (withdrawAccount is ResponseErrorDto) 
             {
-                return withdrawAccount;
+                destinationAccount = new AccountDto
+                {
+                    AccountNumber = request.SourceAccountNumber,
+                    AccountType = request.DestinationAccountType,
+                    Balance = 0M,
+                    DocumentId = request.DocumentId
+                };
+                destinationIsPresent = false;
             }
 
-            var topUpAccount = await _helper.FormAccountEntryResponse(destinationAccount, request.Amount, true);
-            if (topUpAccount is ResponseErrorDto)
-            {
-                return topUpAccount;
-            }
-            var sourceResultAccount = withdrawAccount as ResponseOkDto<AccountEntryDto>;
-            var destinationResultAccount = topUpAccount as ResponseOkDto<AccountEntryDto>;
-            var result = _helper.FormResult(sourceResultAccount.Result, destinationResultAccount.Result);
-            return _helper.FormResponseForTransaction(result);
+            var result = await _helper.FormAccountEntryResponse(sourceAccount, destinationAccount, request.Amount, request.ActualDate, sourceIsPresent,destinationIsPresent);
+            if (result is ResponseErrorDto)
+                return result;
+            
+   
+            return result;
         }
     }
-    
+
 }

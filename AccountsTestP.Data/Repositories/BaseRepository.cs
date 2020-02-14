@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
-using System.Linq;
-using AccountsTestP.Data.AccountDbContext;
-using Microsoft.EntityFrameworkCore;
+﻿using AccountsTestP.Data.AccountDbContext;
 using AccountsTestP.Data.IRepositories;
 using AccountsTestP.Domain.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace AccountsTestP.Data.Repositories
 {
     public class BaseRepository : IRepository<BaseModel>
     {
-        protected readonly AccountTestPDbContext _context; 
-        public BaseRepository(AccountTestPDbContext context )
-        { 
-            _context = context ?? throw new ArgumentNullException(); ; 
+        protected readonly AccountTestPDbContext _context;
+        public BaseRepository(AccountTestPDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(); ;
         }
         public void Dispose()
         {
@@ -24,7 +19,10 @@ namespace AccountsTestP.Data.Repositories
             GC.SuppressFinalize(this);
         }
 
-
+        public void SaveChanges() 
+        {
+            _context.SaveChanges();
+        }
         public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();

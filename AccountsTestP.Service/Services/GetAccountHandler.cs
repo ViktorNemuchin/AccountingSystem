@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using AccountsTestP.Data.IRepositories;
 using AccountsTestP.Domain.Dtos;
 using AccountsTestP.Domain.Queries;
 using AccountsTestP.Service.Dxos;
-using AccountsTestP.Data.IRepositories;
 using MediatR;
-using System.Threading.Tasks;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace AccountsTestP.Service.Services
 {
-    public class GetAccountHandler:IRequestHandler<GetAccountQuery, AccountDto> 
+    public class GetAccountHandler : IRequestHandler<GetAccountQuery, AccountDto>
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IAccountDxos _accountDxos;
-        public GetAccountHandler(IAccountDxos accountDxos, IAccountRepository accountRepository ) 
+        public GetAccountHandler(IAccountDxos accountDxos, IAccountRepository accountRepository)
         {
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
             _accountDxos = accountDxos ?? throw new ArgumentNullException(nameof(accountDxos));
@@ -23,9 +21,8 @@ namespace AccountsTestP.Service.Services
 
         public async Task<AccountDto> Handle(GetAccountQuery request, CancellationToken cancellationToken)
         {
-            
             {
-                var account = await _accountRepository.GetAsync(e => e.Id == request.AccountId);
+                var account = await _accountRepository.GetAsync(e => e.AccountNumber == request.AccountNumber);
                 if (account != null)
                 {
                     var accountDto = _accountDxos.MapAccountDto(account);
@@ -33,6 +30,6 @@ namespace AccountsTestP.Service.Services
                 }
                 return null;
             }
-         }
+        }
     }
 }

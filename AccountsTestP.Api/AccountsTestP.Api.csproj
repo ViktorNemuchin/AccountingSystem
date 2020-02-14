@@ -23,5 +23,8 @@
     <ProjectReference Include="..\AccountsTestP.Data\AccountsTestP.Data.csproj" />
     <ProjectReference Include="..\AccountsTestP.Service\AccountsTestP.Service.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
 
 </Project>

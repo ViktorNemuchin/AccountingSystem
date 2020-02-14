@@ -1,14 +1,8 @@
-﻿using AccountsTestP.Domain.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
-using AccountsTestP.Data.IRepositories;
-using AccountsTestP.Domain.Queries;
-using AccountsTestP.Domain.Command;
-using System.Threading;
+﻿using AccountsTestP.Data.IRepositories;
+using AccountsTestP.Domain.Dtos;
 using AccountsTestP.Domain.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace AccountsTestP.Service.Helper
 {
@@ -17,7 +11,7 @@ namespace AccountsTestP.Service.Helper
         private readonly IAccountsHistoryRepository _accountsHistoryRepository;
         private readonly IAccountRepository _accountRepository;
 
-        public AccountHistoryHelper( IAccountRepository accountRepository, IAccountsHistoryRepository accountsHistoryRepository)
+        public AccountHistoryHelper(IAccountRepository accountRepository, IAccountsHistoryRepository accountsHistoryRepository)
         {
             _accountsHistoryRepository = accountsHistoryRepository;
             _accountRepository = accountRepository;
@@ -34,7 +28,7 @@ namespace AccountsTestP.Service.Helper
             DestanationBalance = destinationAccount.CurrentBalance,
             SourceBalance = sourceAccount.CurrentBalance
         };
-        public ResponseOkDto<TransactionDto> FormResponseForTransaction(TransactionDto result) => new ResponseOkDto<TransactionDto>
+        public ResponseOkDto<TransactionDto> FormResponseForCreateEntry(TransactionDto result) => new ResponseOkDto<TransactionDto>
         {
             Status = "Ok",
             Result = result
@@ -44,42 +38,101 @@ namespace AccountsTestP.Service.Helper
             Status = "Ok",
             Result = result
         };
+        public Guid SaveAccount(AccountDto account, decimal balance) 
+        {
+            var accountModel = new AccountModel(account.AccountNumber, balance, account.DocumentId, account.AccountType);
+            _accountRepository.AddAccount(accountModel);
+            return accountModel.Id;
+        }
+        private void UpdateAccount(AccountDto account, decimal balance) 
+        {
+            var accountModel = new AccountModel(account.AccountNumber, balance, account.DocumentId, account.AccountType);
 
-        public async Task<ResponseBaseDto> FormAccountEntryResponse(AccountDto account, decimal amount, bool isTopUp)  
+            _accountRepository.Update(accountModel);
+        }
+        public async Task<ResponseBaseDto> FormAccountEntryResponse(AccountDto account, decimal amount, bool isTopUp, DateTime actualDate, bool accountPresent)
         {
 
-                var entry = new AccountHistoryModel(account.Id, amount);
-                await _accountsHistoryRepository.AddEntry(entry);
-                var initialBalance = account.Balance;
-                var balance = new decimal();
-                
-                if (isTopUp)
-                    balance = TopUpBalance(initialBalance, amount);   
-                else
-                    if (ValidateAmmount(initialBalance, amount))
-                        return new ResponseErrorDto
-                        {
-                            Status = "error",
-                            Message = "You can't withdraw so much amount of money."
-                        };
-                    else 
-                        balance = WithDrawlBalance(initialBalance, amount);
 
-                var accountModel = new AccountModel(account.Id, account.AccountNumber, balance);
+            var initialBalance = account.Balance;
+            var balance = new decimal();
 
-                _accountRepository.Update(accountModel);
-
-                if (await _accountsHistoryRepository.SaveChangesAsync() == 0)
-                    throw new ApplicationException();
-
-
-                var result = new AccountEntryDto
+            if (isTopUp)
+                balance = TopUpBalance(initialBalance, amount);
+            else
+                if (ValidateAmmount(initialBalance, amount))
+                return new ResponseErrorDto
                 {
-                    CurrentBalance = balance
+                    Status = "error",
+                    Message = "You can't withdraw so much amount of money."
                 };
+            else
+                balance = WithDrawlBalance(initialBalance, amount);
+            
+            if (accountPresent)
+                UpdateAccount(account, balance);
+            else
+                account.Id = SaveAccount(account, balance);
+            
+            var entry = new AccountHistoryModel(account.Id, amount, actualDate);
+            await _accountsHistoryRepository.AddEntry(entry);
+
+
+            if (await _accountsHistoryRepository.SaveChangesAsync() == 0)
+                throw new ApplicationException();
+
+
+            var result = new AccountEntryDto
+            {
+                AccountId = account.Id,
+                CurrentBalance = balance
+            };
             return FormResponseForCreateEntry(result);
 
 
+        }
+        public async Task<ResponseBaseDto> FormAccountEntryResponse(AccountDto sourceAccount,AccountDto destinationAccount, decimal amount, DateTime actualDate, bool sourceAccountPresent, bool destinationAccountIsPresent)
+        {
+            var initialSourceBalance = sourceAccount.Balance;
+            var initialDestinationBalance = destinationAccount.Balance;
+            var sourceBalance = new decimal(); 
+            if (ValidateAmmount(initialSourceBalance, amount))
+                return new ResponseErrorDto
+                {
+                    Status = "error",
+                    Message = "You can't withdraw so much amount of money."
+                };
+            else
+                sourceBalance = WithDrawlBalance(initialDestinationBalance, amount);
+
+            if (sourceAccountPresent)
+                UpdateAccount(sourceAccount, sourceBalance);
+            else
+               sourceAccount.Id = SaveAccount(sourceAccount, sourceBalance);
+            
+            var destinationBalance = TopUpBalance(initialSourceBalance, amount);
+            if (destinationAccountIsPresent)
+                UpdateAccount(destinationAccount, destinationBalance);
+            else
+                destinationAccount.Id = SaveAccount(destinationAccount, destinationBalance);
+            
+
+            var entry = new AccountHistoryModel(sourceAccount.Id, destinationAccount.Id, amount, actualDate);
+            await _accountsHistoryRepository.AddEntry(entry);
+
+            if (await _accountsHistoryRepository.SaveChangesAsync() == 0)
+                throw new ApplicationException();
+
+
+            var result = new TransactionDto
+            {
+                DestinationAccountId = destinationAccount.Id,
+                DestanationBalance = destinationBalance,
+                SourceAccountId = sourceAccount.Id,
+                SourceBalance = sourceBalance
+
+            };
+            return FormResponseForCreateEntry(result);
         }
     }
 }

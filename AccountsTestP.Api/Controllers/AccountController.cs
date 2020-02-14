@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using MediatR;
-using AccountsTestP.Domain.Command;
-using AccountsTestP.Domain.Queries;
+﻿using AccountsTestP.Domain.Command;
 using AccountsTestP.Domain.Dtos;
+using AccountsTestP.Domain.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace AccountsTestP.Api.Controllers
 {
@@ -23,38 +20,38 @@ namespace AccountsTestP.Api.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<ResponseBaseDto>> GetAccountHistory(int accountId) 
+        public async Task<ActionResult<ResponseBaseDto>> GetAccountHistory(Guid accountId)
         {
             return await GetQuery(QueryAsync(new GetAccountHistoryQuery(accountId)).Result);
         }
 
-        [HttpPost("{accountId}/top-up")]
+        [HttpPost("{accountNumber}/top-up")]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult> TopUpAccount([FromRoute]int accountId, [FromBody]AmountTransferDto account) 
+        public async Task<ActionResult> TopUpAccount([FromRoute]int accountNumber, [FromBody]AmountOneDto account)
         {
-                var accountCommand = new CreateAccountHistoryEntryCommand(accountId, Convert.ToDecimal(account.CurrentAmount), true);
-                return Ok(await CommandAsync(accountCommand));
+            var accountCommand = new CreateAccountHistoryEntryCommand(accountNumber, Convert.ToDecimal(account.CurrentAmount), true, account.ActualDateTime, account.AccountType, account.DocumentId);
+            return Ok(await CommandAsync(accountCommand));
         }
 
-        [HttpPost("{accountId}/withdraw")]
+        [HttpPost("{accountNumber}/withdraw")]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult> WithDrawAccount([FromRoute]int accountId, [FromBody]AmountTransferDto account)
+        public async Task<ActionResult> WithDrawAccount([FromRoute]int accountNumber, [FromBody]AmountOneDto account)
         {
-                var accountCommand = new CreateAccountHistoryEntryCommand(accountId, Convert.ToDecimal(account.CurrentAmount), false);
-                return Ok(await CommandAsync(accountCommand));
+            var accountCommand = new CreateAccountHistoryEntryCommand(accountNumber, Convert.ToDecimal(account.CurrentAmount), false, account.ActualDateTime, account.AccountType, account.DocumentId);
+            return Ok(await CommandAsync(accountCommand));
 
         }
-        [HttpPost("{sourceAccountId}/transfer/{destinationAccountId}")]
+        [HttpPost("{sourceAccountNumber}/transfer/{destinationAccountNumber}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult> TransferAccount([FromRoute]int sourceAccountId, [FromRoute]int destinationAccountId,[FromBody]AmountTransferDto account)
+        public async Task<ActionResult> TransferAccount([FromRoute]int sourceAccountNumber, [FromRoute]int destinationAccountNumber, [FromBody]AmountTransferDto account)
         {
-            var accountCommand = new CreateTransferAccountCommand(sourceAccountId, destinationAccountId,Convert.ToDecimal(account.CurrentAmount));
+            var accountCommand = new CreateTransferAccountCommand(sourceAccountNumber, destinationAccountNumber, Convert.ToDecimal(account.CurrentAmount), account.ActualDateTime, account.SourceAccountType, account.DestinationAccountType, account.DocumentId);
             return Ok(await CommandAsync(accountCommand));
 
         }

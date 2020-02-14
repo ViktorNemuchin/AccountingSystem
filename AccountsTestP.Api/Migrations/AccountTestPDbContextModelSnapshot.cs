@@ -21,13 +21,12 @@ namespace AccountsTestP.Api.Migrations
 
             modelBuilder.Entity("AccountsTestP.Domain.Models.AccountHistoryModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("AccountId")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("ActualDate")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
@@ -36,6 +35,12 @@ namespace AccountsTestP.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<Guid>("DestinationAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SourceAccountId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.ToTable("AccountHistory");
@@ -43,40 +48,25 @@ namespace AccountsTestP.Api.Migrations
 
             modelBuilder.Entity("AccountsTestP.Domain.Models.AccountModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("text");
+                    b.Property<int>("AccountNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AccountType")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("numeric");
 
+                    b.Property<Guid>("DocumentId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.ToTable("Accounts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 56,
-                            AccountNumber = "45345453dfvxv",
-                            Balance = 6000.56m
-                        },
-                        new
-                        {
-                            Id = 47,
-                            AccountNumber = "456790-=dfskdf",
-                            Balance = 7000.67m
-                        },
-                        new
-                        {
-                            Id = 87,
-                            AccountNumber = "9304823742350",
-                            Balance = 125000.78m
-                        });
                 });
 #pragma warning restore 612, 618
         }

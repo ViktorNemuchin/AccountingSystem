@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MediatR;
+﻿using MediatR;
 
 namespace AccountsTestP.Domain.Command
 {
@@ -9,5 +6,5 @@ namespace AccountsTestP.Domain.Command
     {
 
     }
-    
+
 }

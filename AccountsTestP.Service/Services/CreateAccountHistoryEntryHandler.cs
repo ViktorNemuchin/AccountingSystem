@@ -1,16 +1,11 @@
 ﻿using AccountsTestP.Data.IRepositories;
-using AccountsTestP.Service.Dxos;
 using AccountsTestP.Domain.Command;
 using AccountsTestP.Domain.Dtos;
-using AccountsTestP.Domain.Models;
 using AccountsTestP.Domain.Queries;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 using AccountsTestP.Service.Helper;
+using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace AccountsTestP.Service.Services
@@ -31,10 +26,21 @@ namespace AccountsTestP.Service.Services
 
         public async Task<ResponseBaseDto> Handle(CreateAccountHistoryEntryCommand request, CancellationToken cancellationToken)
         {
-            var account = _mediator.Send(new GetAccountQuery(request.AccountId)).Result;
-            if (account!= null)
-                return await _helper.FormAccountEntryResponse(account, request.Amount, request.IsTopUp);
-            return null;
+  
+            var account = _mediator.Send(new GetAccountQuery(request.AccountNumber)).Result;
+            if (account == null) 
+            {
+                var createAccount = new AccountDto
+                {
+                    AccountNumber = request.AccountNumber,
+                    AccountType = request.AccountType,
+                    Balance = 0M,
+                    DocumentId = request.DocumentId
+                };
+                return await _helper.FormAccountEntryResponse(createAccount, request.Amount, request.IsTopUp, request.ActualDate, false);
+            }
+               
+            return await _helper.FormAccountEntryResponse(account, request.Amount, request.IsTopUp, request.ActualDate, true);
 
         }
     }

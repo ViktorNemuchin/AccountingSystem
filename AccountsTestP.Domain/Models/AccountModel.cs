@@ -1,18 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AccountsTestP.Domain.Models
 {
-    public class AccountModel:BaseModel
+    public class AccountModel : BaseModel
     {
-        public string AccountNumber { get; private set; }
+        public int AccountNumber { get; private set; }
         public decimal Balance { get; private set; }
-        public AccountModel(int id, string accountNumber, decimal balance) 
+        public Guid DocumentId { get; private set; }
+        public int AccountType { get; private set; }
+        public AccountModel(int accountNumber, decimal balance, Guid documentId, int accountType)
         {
-            Id = id;
             AccountNumber = accountNumber;
             Balance = balance;
+            DocumentId = documentId;
+            AccountType = accountType;
         }
     }
 }

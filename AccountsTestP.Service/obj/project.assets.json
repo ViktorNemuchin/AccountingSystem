@@ -3599,11 +3599,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "Z:\\new\\AccountTestProject\\AccountsTestP.Service\\AccountsTestP.Service.csproj",
+      "projectUniqueName": "Z:\\AccountingSystem\\accounting_system\\AccountsTestP.Service\\AccountsTestP.Service.csproj",
       "projectName": "AccountsTestP.Service",
-      "projectPath": "Z:\\new\\AccountTestProject\\AccountsTestP.Service\\AccountsTestP.Service.csproj",
+      "projectPath": "Z:\\AccountingSystem\\accounting_system\\AccountsTestP.Service\\AccountsTestP.Service.csproj",
       "packagesPath": "C:\\Users\\nemukhin.v\\.nuget\\packages\\",
-      "outputPath": "Z:\\new\\AccountTestProject\\AccountsTestP.Service\\obj\\",
+      "outputPath": "Z:\\AccountingSystem\\accounting_system\\AccountsTestP.Service\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -3622,11 +3622,11 @@
       "frameworks": {
         "netcoreapp3.0": {
           "projectReferences": {
-            "Z:\\new\\AccountTestProject\\AccountsTestP.Data\\AccountsTestP.Data.csproj": {
-              "projectPath": "Z:\\new\\AccountTestProject\\AccountsTestP.Data\\AccountsTestP.Data.csproj"
+            "Z:\\AccountingSystem\\accounting_system\\AccountsTestP.Data\\AccountsTestP.Data.csproj": {
+              "projectPath": "Z:\\AccountingSystem\\accounting_system\\AccountsTestP.Data\\AccountsTestP.Data.csproj"
             },
-            "Z:\\new\\AccountTestProject\\AccountsTestP.Domain\\AccountsTestP.Domain.csproj": {
-              "projectPath": "Z:\\new\\AccountTestProject\\AccountsTestP.Domain\\AccountsTestP.Domain.csproj"
+            "Z:\\AccountingSystem\\accounting_system\\AccountsTestP.Domain\\AccountsTestP.Domain.csproj": {
+              "projectPath": "Z:\\AccountingSystem\\accounting_system\\AccountsTestP.Domain\\AccountsTestP.Domain.csproj"
             }
           }
         }

@@ -1,19 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AccountsTestP.Domain.Models
 {
-    public class AccountHistoryModel: BaseModel
+    public class AccountHistoryModel : BaseModel
     {
-        public int AccountId { get; set; }
-        public decimal Amount { get; set; }
-        public DateTime ChangedAt { get; set; } = DateTime.Now;
+        public Guid SourceAccountId { get; private set; }
+        public Guid DestinationAccountId { get; private set; }
+        public decimal Amount { get; private set; }
+        public DateTime ChangedAt { get; private set; } = DateTime.Now;
+        public DateTime ActualDate { get; private set; }
 
-        public AccountHistoryModel( int accountId, decimal amount) 
+        public AccountHistoryModel(Guid destinationAccountId, Guid sourceAccountId, decimal amount, DateTime actualDate)
         {
-            AccountId = accountId;
+            DestinationAccountId = destinationAccountId;
+            SourceAccountId = sourceAccountId;
             Amount = amount;
+            ActualDate = actualDate;
+        }
+
+        public AccountHistoryModel(Guid sourceAccountId, decimal amount, DateTime actualDate)
+        {
+            SourceAccountId = sourceAccountId;
+            Amount = amount;
+            ActualDate = actualDate;
         }
     }
 }

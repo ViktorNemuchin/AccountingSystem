@@ -1,29 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
+using AccountsTestP.Api.Filters;
 using AccountsTestP.Data.AccountDbContext;
 using AccountsTestP.Data.IRepositories;
 using AccountsTestP.Data.Repositories;
-using AccountsTestP.Service.Services;
-using AccountsTestP.Domain.Queries;
-using AccountsTestP.Data;
 using AccountsTestP.Service.Dxos;
 using MediatR;
-using AutoMapper;
-using AccountsTestP.Api.Filters;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
+using System;
 using System.IO;
+using System.Reflection;
 
 namespace AccountsTestP.Api
 {
@@ -53,7 +43,8 @@ namespace AccountsTestP.Api
             services.AddMediatR(typeof(AccountsTestP.Service.Services.GetAccountHistoryHandler).Assembly);
             services.AddControllers(options =>
                options.Filters.Add(new HttpResponseExceptionFilter()));
-            services.AddSwaggerGen(c => {
+            services.AddSwaggerGen(c =>
+            {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web Api Router", Version = "v1" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -63,6 +54,11 @@ namespace AccountsTestP.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<AccountTestPDbContext>();
+                context.Database.Migrate();
+            }
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

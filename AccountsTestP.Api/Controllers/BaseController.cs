@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MediatR;
-using AccountsTestP.Domain.Dtos;
+using System;
+using System.Threading.Tasks;
 
 namespace AccountsTestP.Api.Controllers
 {
@@ -15,7 +11,7 @@ namespace AccountsTestP.Api.Controllers
     public class BaseController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public BaseController(IMediator mediator) 
+        public BaseController(IMediator mediator)
         {
             _mediator = mediator ?? throw new ArgumentNullException();
         }
@@ -25,7 +21,7 @@ namespace AccountsTestP.Api.Controllers
             return await _mediator.Send(query);
         }
 
-        protected async Task <ActionResult<T>> GetQuery<T>(T data)
+        protected async Task<ActionResult<T>> GetQuery<T>(T data)
         {
             return Ok(data);
         }
