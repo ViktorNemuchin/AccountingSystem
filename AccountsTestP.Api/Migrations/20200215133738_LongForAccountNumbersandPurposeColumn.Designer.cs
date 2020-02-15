@@ -3,15 +3,17 @@ using System;
 using AccountsTestP.Data.AccountDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AccountsTestP.Api.Migrations
 {
     [DbContext(typeof(AccountTestPDbContext))]
-    partial class AccountTestPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200215133738_LongForAccountNumbersandPurposeColumn")]
+    partial class LongForAccountNumbersandPurposeColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,8 +57,8 @@ namespace AccountsTestP.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("text");
+                    b.Property<long>("AccountNumber")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("AccountType")
                         .HasColumnType("integer");

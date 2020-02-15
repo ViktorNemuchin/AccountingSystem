@@ -28,8 +28,9 @@ namespace AccountsTestP.Data.Repositories
 
         public void Update(AccountModel account)
         {
-            _context.Accounts.Attach(account);
-            //_context.Entry(account).State = EntityState.Modified;
+            _context.Accounts.Update(account);
+            _context.Entry(account).State = EntityState.Modified;
         }
+
     }
 }

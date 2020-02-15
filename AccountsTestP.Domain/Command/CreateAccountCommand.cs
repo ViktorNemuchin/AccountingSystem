@@ -5,22 +5,21 @@ namespace AccountsTestP.Domain.Command
 {
     public class CreateAccountCommand : CommandBase<ResponseBaseDto>
     {
-        public CreateAccountCommand(decimal initialBalance, int accountType, Guid documentId, int accountNumber)
+        public CreateAccountCommand(decimal initialBalance, int accountType, Guid operationId, string accountNumber)
         {
             InitialBalance = initialBalance;
             AccountNumber = accountNumber;
             AccountType = accountType;
-            DocumentId = documentId;
-            
+            OperationId = operationId;
         }
 
         public decimal InitialBalance { get; private set; }
 
-        public int AccountNumber { get; set; }
+        public string AccountNumber { get; set; }
 
         public int AccountType { get; private set; }
 
-        public Guid DocumentId { get; private set; }
+        public Guid OperationId { get; private set; }
 
     }
 }

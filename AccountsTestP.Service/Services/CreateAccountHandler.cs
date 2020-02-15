@@ -22,7 +22,7 @@ namespace AccountsTestP.Service.Services
 
         public async Task<ResponseBaseDto> Handle(CreateAccountCommand request, CancellationToken cancellationToken) 
         {
-            var account = new AccountModel(request.AccountNumber, request.InitialBalance, request.DocumentId, request.AccountType);
+            var account = new AccountModel(request.AccountNumber, request.InitialBalance, request.OperationId, request.AccountType);
             await _accountRepository.AddAccount(account);
 
             return new ResponseOkDto<AccountModel>

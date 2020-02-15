@@ -36,7 +36,7 @@ namespace AccountsTestP.Service.Services
                     AccountNumber = request.SourceAccountNumber,
                     AccountType = request.SourceAccountType,
                     Balance = 0M,
-                    DocumentId = request.DocumentId
+                    OperationId = request.OperationId
                 };
                 sourceIsPresent = false;
             }
@@ -47,15 +47,15 @@ namespace AccountsTestP.Service.Services
             {
                 destinationAccount = new AccountDto
                 {
-                    AccountNumber = request.SourceAccountNumber,
+                    AccountNumber = request.DestinationAccountNumber,
                     AccountType = request.DestinationAccountType,
                     Balance = 0M,
-                    DocumentId = request.DocumentId
+                    OperationId = request.OperationId
                 };
                 destinationIsPresent = false;
             }
 
-            var result = await _helper.FormAccountEntryResponse(sourceAccount, destinationAccount, request.Amount, request.ActualDate, sourceIsPresent,destinationIsPresent);
+            var result = await _helper.FormAccountEntryResponse(sourceAccount, destinationAccount, request.Amount, request.ActualDate,request.Purpose, sourceIsPresent,destinationIsPresent);
             if (result is ResponseErrorDto)
                 return result;
             

@@ -10,25 +10,30 @@ namespace AccountsTestP.Domain.Command
         public CreateAccountHistoryEntryCommand()
         {
         }
-        public CreateAccountHistoryEntryCommand(int accountNumber, decimal amount, bool isTopUp, DateTime actualDate, int accountType, Guid documentId)
+        public CreateAccountHistoryEntryCommand(string accountNumber, decimal amount, bool isTopUp, DateTime actualDate, int accountType, Guid operationId, int purpose)
         {
             AccountNumber = accountNumber;
             Amount = amount;
             IsTopUp = isTopUp;
             ActualDate = actualDate;
             AccountType = accountType;
-            DocumentId = documentId;
+            OperationId = operationId;
+            Purpose = purpose;
         }
         [Required]
         [JsonPropertyName("account_nu,ber")]
-        public int AccountNumber { get; }
+        public string AccountNumber { get; }
         [Required]
         [JsonPropertyName("amount")]
         public decimal Amount { get; }
         [JsonIgnore]
         public bool IsTopUp { get; }
+        [JsonPropertyName("account_type")]
         public int AccountType { get; }
-        public Guid DocumentId { get; } 
-        public DateTime ActualDate { get; set; } 
+        [JsonPropertyName("operation_id")]
+        public Guid OperationId { get; }
+        [JsonPropertyName("actual_date")]
+        public DateTime ActualDate { get; private set; }
+        public int Purpose { get; private set; }
     }
 }

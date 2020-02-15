@@ -40,20 +40,17 @@ namespace AccountsTestP.Service.Helper
         };
         public Guid SaveAccount(AccountDto account, decimal balance) 
         {
-            var accountModel = new AccountModel(account.AccountNumber, balance, account.DocumentId, account.AccountType);
+            var accountModel = new AccountModel(account.AccountNumber, balance, account.OperationId, account.AccountType);
             _accountRepository.AddAccount(accountModel);
             return accountModel.Id;
         }
         private void UpdateAccount(AccountDto account, decimal balance) 
         {
-            var accountModel = new AccountModel(account.AccountNumber, balance, account.DocumentId, account.AccountType);
-
+            var accountModel = new AccountModel(account.Id, account.AccountNumber, balance, account.OperationId, account.AccountType);
             _accountRepository.Update(accountModel);
         }
-        public async Task<ResponseBaseDto> FormAccountEntryResponse(AccountDto account, decimal amount, bool isTopUp, DateTime actualDate, bool accountPresent)
+        public async Task<ResponseBaseDto> FormAccountEntryResponse(AccountDto account, decimal amount, bool isTopUp, DateTime actualDate,int purpose, bool accountPresent)
         {
-
-
             var initialBalance = account.Balance;
             var balance = new decimal();
 
@@ -66,7 +63,7 @@ namespace AccountsTestP.Service.Helper
                     Status = "error",
                     Message = "You can't withdraw so much amount of money."
                 };
-            else
+                else
                 balance = WithDrawlBalance(initialBalance, amount);
             
             if (accountPresent)
@@ -74,7 +71,7 @@ namespace AccountsTestP.Service.Helper
             else
                 account.Id = SaveAccount(account, balance);
             
-            var entry = new AccountHistoryModel(account.Id, amount, actualDate);
+            var entry = new AccountHistoryModel(account.Id, amount, actualDate, purpose);
             await _accountsHistoryRepository.AddEntry(entry);
 
 
@@ -91,7 +88,7 @@ namespace AccountsTestP.Service.Helper
 
 
         }
-        public async Task<ResponseBaseDto> FormAccountEntryResponse(AccountDto sourceAccount,AccountDto destinationAccount, decimal amount, DateTime actualDate, bool sourceAccountPresent, bool destinationAccountIsPresent)
+        public async Task<ResponseBaseDto> FormAccountEntryResponse(AccountDto sourceAccount,AccountDto destinationAccount, decimal amount, DateTime actualDate, int purpose, bool sourceAccountPresent, bool destinationAccountIsPresent)
         {
             var initialSourceBalance = sourceAccount.Balance;
             var initialDestinationBalance = destinationAccount.Balance;
@@ -103,21 +100,21 @@ namespace AccountsTestP.Service.Helper
                     Message = "You can't withdraw so much amount of money."
                 };
             else
-                sourceBalance = WithDrawlBalance(initialDestinationBalance, amount);
+                sourceBalance = WithDrawlBalance(initialSourceBalance, amount);
 
             if (sourceAccountPresent)
                 UpdateAccount(sourceAccount, sourceBalance);
             else
                sourceAccount.Id = SaveAccount(sourceAccount, sourceBalance);
             
-            var destinationBalance = TopUpBalance(initialSourceBalance, amount);
+            var destinationBalance = TopUpBalance(initialDestinationBalance, amount);
             if (destinationAccountIsPresent)
                 UpdateAccount(destinationAccount, destinationBalance);
             else
                 destinationAccount.Id = SaveAccount(destinationAccount, destinationBalance);
             
 
-            var entry = new AccountHistoryModel(sourceAccount.Id, destinationAccount.Id, amount, actualDate);
+            var entry = new AccountHistoryModel(sourceAccount.Id, destinationAccount.Id, amount, actualDate, purpose);
             await _accountsHistoryRepository.AddEntry(entry);
 
             if (await _accountsHistoryRepository.SaveChangesAsync() == 0)

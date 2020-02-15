@@ -19,7 +19,7 @@ namespace AccountsTestP.Service.Dxos
                 config.CreateMap<CreateAccountCommand, AccountModel>()
                 .ForMember(dst => dst.AccountNumber, opt => opt.MapFrom(src => src.AccountNumber))
                 .ForMember(dst => dst.Balance, opt => opt.MapFrom(src => src.InitialBalance))
-                .ForMember(dst => dst.DocumentId, opt => opt.MapFrom(src => src.DocumentId))
+                .ForMember(dst => dst.OperationId, opt => opt.MapFrom(src => src.OperationId))
                 .ForMember(dst => dst.AccountNumber, opt => opt.MapFrom(src => src.AccountNumber))
                 .ForMember(dst => dst.AccountType, opt => opt.MapFrom(src => src.AccountType));
             });

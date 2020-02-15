@@ -20,7 +20,11 @@ namespace AccountsTestP.Domain.Dtos
 
         [JsonPropertyName("changed_at")]
         public DateTime ChangedAt { get; set; }
+
+        [JsonPropertyName("actual_date_time")]
         public DateTime ActualDateTime { get; set; }
+        [JsonPropertyName("purpose")]
+        public int Purpose { get; set; }
     }
 
 }

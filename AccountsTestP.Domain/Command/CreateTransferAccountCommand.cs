@@ -7,22 +7,23 @@ namespace AccountsTestP.Domain.Command
 {
     public class CreateTransferAccountCommand : CommandBase<ResponseBaseDto>
     {
-        public CreateTransferAccountCommand(int sourceAccountNumber, int destinationAccountNumber, decimal amount, DateTime actualDate, int sourceAccountType, int destinationAccountType,Guid documentId)
+        public CreateTransferAccountCommand(string sourceAccountNumber, string destinationAccountNumber, decimal amount, DateTime actualDate, int sourceAccountType, int destinationAccountType,Guid operationId, int purpose)
         {
             SourceAccountNumber = sourceAccountNumber;
             DestinationAccountNumber = destinationAccountNumber;
             Amount = amount;
             ActualDate = actualDate;
             SourceAccountType = sourceAccountType;
-            DestinationAccountType = DestinationAccountType;
-            DocumentId = documentId;
+            DestinationAccountType = destinationAccountType;
+            OperationId = operationId;
+            Purpose = purpose;
         }
         [Required]
         [JsonPropertyName("source_account_id")]
-        public int SourceAccountNumber { get; }
+        public string SourceAccountNumber { get; }
         [Required]
         [JsonPropertyName("destination_account_id")]
-        public int DestinationAccountNumber { get; }
+        public string DestinationAccountNumber { get; }
         [Required]
         [JsonPropertyName("amount")]
         public decimal Amount { get; }
@@ -31,12 +32,13 @@ namespace AccountsTestP.Domain.Command
         public DateTime ActualDate { get; }
         [Required]
         [JsonPropertyName("document_id")]
-        public Guid DocumentId{get;}
+        public Guid OperationId{get;}
         [Required]
         [JsonPropertyName("source_account_type")]
         public int SourceAccountType { get; }
         [Required]
         [JsonPropertyName("destination_account_type")]
         public int DestinationAccountType { get; }
+        public int Purpose { get; } 
     }
 }

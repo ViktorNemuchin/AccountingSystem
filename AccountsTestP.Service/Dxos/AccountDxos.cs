@@ -15,7 +15,7 @@ namespace AccountsTestP.Service.Dxos
                 .ForMember(dst => dst.AccountNumber, opt => opt.MapFrom(src => src.AccountNumber))
                 .ForMember(dst => dst.Balance, opt => opt.MapFrom(src => src.Balance))
                 .ForMember(dst => dst.AccountType, opt => opt.MapFrom(src => src.AccountType))
-                .ForMember(dst => dst.DocumentId, opt => opt.MapFrom(src => src.DocumentId));
+                .ForMember(dst => dst.OperationId, opt => opt.MapFrom(src => src.OperationId));
             });
 
             _mapper = configuration.CreateMapper();
