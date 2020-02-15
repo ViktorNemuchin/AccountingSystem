@@ -34,13 +34,12 @@ namespace AccountsTestP.Service.Services
                 {
                     AccountNumber = request.AccountNumber,
                     AccountType = request.AccountType,
-                    Balance = 0M,
-                    OperationId = request.OperationId
+                    Balance = 0M
                 };
-                return await _helper.FormAccountEntryResponse(createAccount, request.Amount, request.IsTopUp, request.ActualDate,request.Purpose, false);
+                return await _helper.FormAccountEntryResponse(createAccount, request.OperationId,  request.Amount, request.IsTopUp, request.ActualDate,request.Purpose, false);
             }
                
-            return await _helper.FormAccountEntryResponse(account, request.Amount, request.IsTopUp, request.ActualDate,request.Purpose, true);
+            return await _helper.FormAccountEntryResponse(account,request.OperationId, request.Amount, request.IsTopUp, request.ActualDate,request.Purpose, true);
 
         }
     }

@@ -12,8 +12,6 @@ namespace AccountsTestP.Domain.Dtos
         public string AccountNumber { get; set; }
         [JsonPropertyName("balance")]
         public decimal Balance { get; set; }
-        [JsonPropertyName("document_id")]
-        public Guid OperationId { get; set; }
         
         [JsonPropertyName("account_type")]
         public int AccountType { get; set; }
