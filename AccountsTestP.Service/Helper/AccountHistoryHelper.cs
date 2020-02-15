@@ -101,7 +101,7 @@ namespace AccountsTestP.Service.Helper
                 };
             else
                 sourceBalance = WithDrawlBalance(initialSourceBalance, amount);
-
+            
             if (sourceAccountPresent)
                 UpdateAccount(sourceAccount, sourceBalance);
             else
@@ -114,7 +114,7 @@ namespace AccountsTestP.Service.Helper
                 destinationAccount.Id = SaveAccount(destinationAccount, destinationBalance);
             
 
-            var entry = new AccountHistoryModel(sourceAccount.Id, destinationAccount.Id, amount, actualDate, purpose, operationId);
+            var entry = new AccountHistoryModel(destinationAccount.Id, sourceAccount.Id, amount, actualDate, purpose, operationId);
             await _accountsHistoryRepository.AddEntry(entry);
 
             if (await _accountsHistoryRepository.SaveChangesAsync() == 0)
