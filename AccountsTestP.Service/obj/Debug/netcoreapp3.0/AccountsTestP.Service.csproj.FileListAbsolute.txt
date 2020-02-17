@@ -14,16 +14,3 @@ Z:\new\AccountTestProject\AccountsTestP.Service\obj\Debug\netcoreapp3.0\Accounts
 Z:\new\AccountTestProject\AccountsTestP.Service\obj\Debug\netcoreapp3.0\AccountsTestP.Service.csproj.CopyComplete
 Z:\new\AccountTestProject\AccountsTestP.Service\obj\Debug\netcoreapp3.0\AccountsTestP.Service.dll
 Z:\new\AccountTestProject\AccountsTestP.Service\obj\Debug\netcoreapp3.0\AccountsTestP.Service.pdb
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\bin\Debug\netcoreapp3.0\AccountsTestP.Service.deps.json
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\bin\Debug\netcoreapp3.0\AccountsTestP.Service.dll
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\bin\Debug\netcoreapp3.0\AccountsTestP.Service.pdb
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\bin\Debug\netcoreapp3.0\AccountsTestP.Data.dll
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\bin\Debug\netcoreapp3.0\AccountsTestP.Domain.dll
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\bin\Debug\netcoreapp3.0\AccountsTestP.Domain.pdb
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\bin\Debug\netcoreapp3.0\AccountsTestP.Data.pdb
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\obj\Debug\netcoreapp3.0\AccountsTestP.Service.csprojAssemblyReference.cache
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\obj\Debug\netcoreapp3.0\AccountsTestP.Service.AssemblyInfoInputs.cache
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\obj\Debug\netcoreapp3.0\AccountsTestP.Service.AssemblyInfo.cs
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\obj\Debug\netcoreapp3.0\AccountsTestP.Service.csproj.CopyComplete
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\obj\Debug\netcoreapp3.0\AccountsTestP.Service.dll
-Z:\AccountingSystem\accounting_system\AccountsTestP.Service\obj\Debug\netcoreapp3.0\AccountsTestP.Service.pdb
