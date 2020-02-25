@@ -1,12 +1,11 @@
 ﻿using AccountsTestP.Domain.Dtos;
 using AccountsTestP.Domain.Models;
-
-
+using System.Collections.Generic;
 
 namespace AccountsTestP.Service.Dxos
 {
     public interface IAccountHistoryDxos
     {
-        public AccountHistoryDto MapAccountHistoryDto(AccountHistoryModel entry);
+        public List<AccountHistoryDto> MapAccountHistoryDto(List<AccountHistoryModel> entry);
     }
 }

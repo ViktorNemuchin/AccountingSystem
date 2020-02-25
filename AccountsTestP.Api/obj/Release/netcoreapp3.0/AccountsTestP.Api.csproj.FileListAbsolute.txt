@@ -227,3 +227,5 @@ Z:\AccountingSystem\accounting_system\AccountsTestP.Api\obj\Release\netcoreapp3.
 Z:\AccountingSystem\accounting_system\AccountsTestP.Api\obj\Release\netcoreapp3.0\AccountsTestP.Api.csproj.CopyComplete
 Z:\AccountingSystem\accounting_system\AccountsTestP.Api\obj\Release\netcoreapp3.0\AccountsTestP.Api.dll
 Z:\AccountingSystem\accounting_system\AccountsTestP.Api\obj\Release\netcoreapp3.0\AccountsTestP.Api.pdb
+Z:\AccountingSystem\accounting_system\AccountsTestP.Api\bin\Release\netcoreapp3.0\AccountsTestP.Api.xml
+Z:\AccountingSystem\accounting_system\AccountsTestP.Api\obj\Release\netcoreapp3.0\AccountsTestP.Api.xml

@@ -11,13 +11,18 @@ namespace AccountsTestP.Data.AccountDbContext
         }
 
         public DbSet<AccountModel> Accounts { get; set; }
+
         public DbSet<AccountHistoryModel> AccountHistory { get; set; }
+
+        public DbSet<AccountTypeModel> AccountTypes { get; set; }
+
+        public DbSet<BufferForFutureEntriesDatesModel> Buffer { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .Entity<AccountHistoryModel>()
-                .Property(ca => ca.ChangedAt)
+                .Property(ca => ca.CreationDate)
                 .ValueGeneratedOnAdd();
 
             modelBuilder

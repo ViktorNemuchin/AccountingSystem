@@ -25,24 +25,30 @@ namespace AccountsTestP.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("ActualDate")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime>("ChangedAt")
+                    b.Property<DateTimeOffset>("CreationDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("DestinationAccountBalance")
+                        .HasColumnType("numeric");
 
                     b.Property<Guid>("DestinationAccountId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTimeOffset>("DueDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("OperationId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Purpose")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("SourceAccountBalance")
+                        .HasColumnType("numeric");
 
                     b.Property<Guid>("SourceAccountId")
                         .HasColumnType("uuid");
@@ -67,9 +73,64 @@ namespace AccountsTestP.Api.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("AccountsTestP.Domain.Models.AccountTypeModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AccountTypeName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("AccountTypeNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AccountTypes");
+                });
+
+            modelBuilder.Entity("AccountsTestP.Domain.Models.BufferForFutureEntriesDatesModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTimeOffset>("CreationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("DestinationAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("DueDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SourceAccountId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Buffer");
                 });
 #pragma warning restore 612, 618
         }

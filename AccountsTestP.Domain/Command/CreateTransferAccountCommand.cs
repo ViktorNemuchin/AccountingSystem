@@ -7,7 +7,7 @@ namespace AccountsTestP.Domain.Command
 {
     public class CreateTransferAccountCommand : CommandBase<ResponseBaseDto>
     {
-        public CreateTransferAccountCommand(string sourceAccountNumber, string destinationAccountNumber, decimal amount, DateTime actualDate, int sourceAccountType, int destinationAccountType,Guid operationId, int purpose)
+        public CreateTransferAccountCommand(string sourceAccountNumber, string destinationAccountNumber, decimal amount, DateTimeOffset actualDate, int sourceAccountType, int destinationAccountType,Guid operationId, string description)
         {
             SourceAccountNumber = sourceAccountNumber;
             DestinationAccountNumber = destinationAccountNumber;
@@ -16,7 +16,7 @@ namespace AccountsTestP.Domain.Command
             SourceAccountType = sourceAccountType;
             DestinationAccountType = destinationAccountType;
             OperationId = operationId;
-            Purpose = purpose;
+            Description = description;
         }
         [Required]
         [JsonPropertyName("source_account_id")]
@@ -29,7 +29,7 @@ namespace AccountsTestP.Domain.Command
         public decimal Amount { get; }
         [Required]
         [JsonPropertyName("actual_date")]
-        public DateTime ActualDate { get; }
+        public DateTimeOffset ActualDate { get; }
         [Required]
         [JsonPropertyName("document_id")]
         public Guid OperationId{get;}
@@ -39,6 +39,6 @@ namespace AccountsTestP.Domain.Command
         [Required]
         [JsonPropertyName("destination_account_type")]
         public int DestinationAccountType { get; }
-        public int Purpose { get; } 
+        public string Description { get; } 
     }
 }

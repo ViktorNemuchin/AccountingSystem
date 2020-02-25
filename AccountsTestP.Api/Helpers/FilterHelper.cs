@@ -27,7 +27,7 @@ namespace AccountsTestP.Api.Helpers
                 context.Result = new ObjectResult(context.Result)
                 {
                     StatusCode = 404,
-                    Value = "Can't find current account number"
+                    Value = "There is no such item"
                 };
                 context.ExceptionHandled = true;
             }

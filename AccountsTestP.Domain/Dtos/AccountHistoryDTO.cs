@@ -14,19 +14,27 @@ namespace AccountsTestP.Domain.Dtos
 
         [JsonPropertyName("destination_account_id")]
         public Guid DestinationAccounId { get; set; }
+        
         [JsonPropertyName("operation_id")]
         public Guid OperationId { get; set; }
-
+        
+        [JsonPropertyName("source_balance")]
+        public decimal SourceBalance { get; set; }
+        
+        [JsonPropertyName("destination_balance")]
+        public decimal DestinationBalance { get; set; }
+        
         [JsonPropertyName("amount")]
         public decimal Amount { get; set; }
 
         [JsonPropertyName("changed_at")]
-        public DateTime ChangedAt { get; set; }
+        public DateTimeOffset ChangedAt { get; set; }
 
-        [JsonPropertyName("actual_date_time")]
-        public DateTime ActualDateTime { get; set; }
-        [JsonPropertyName("purpose")]
-        public int Purpose { get; set; }
+        [JsonPropertyName("due_date_time")]
+        public DateTimeOffset DueDateTime { get; set; }
+       
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
     }
 
 }

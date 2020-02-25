@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace AccountsTestP.Domain.Dtos
 {
-    public class AccountEntryDto
+    public class AccountTransferDto
     {
 
         [JsonPropertyName("account_id")]

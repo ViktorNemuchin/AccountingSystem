@@ -4,6 +4,7 @@ using AccountsTestP.Domain.Dtos;
 using AccountsTestP.Domain.Queries;
 using AccountsTestP.Service.Helper;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,52 +14,43 @@ namespace AccountsTestP.Service.Services
     {
         private readonly IAccountsHistoryRepository _accountsHistoryRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly IAccountHistoryBufferRepository _bufferRepository;
         private readonly IMediator _mediator;
-        private readonly AccountHistoryHelper _helper;
+        private readonly CreateAccountHistoryHelper _helper;
+        private readonly AccountHistoryBufferHelper _bufferHelper;
 
-        public CreateTransferCommandHandler(IMediator mediator, IAccountRepository accountRepository, IAccountsHistoryRepository accountsHistoryRepository)
+
+        public CreateTransferCommandHandler(IMediator mediator, IAccountRepository accountRepository, IAccountsHistoryRepository accountsHistoryRepository, IAccountHistoryBufferRepository bufferRepository)
         {
             _accountsHistoryRepository = accountsHistoryRepository;
             _accountRepository = accountRepository;
+            _bufferRepository = bufferRepository;
             _mediator = mediator;
-            _helper = new AccountHistoryHelper(_accountRepository, _accountsHistoryRepository);
+            _helper = new CreateAccountHistoryHelper(_accountsHistoryRepository, _accountRepository);
+            _bufferHelper = new AccountHistoryBufferHelper(_bufferRepository, _accountRepository);
         }
 
         public async Task<ResponseBaseDto> Handle(CreateTransferAccountCommand request, CancellationToken cancellationToken)
         {
-            bool sourceIsPresent =true;
-            bool destinationIsPresent = true;
+            bool isSourcePresent =true;
+            bool isDestinationPresent = true;
             var sourceAccount = _mediator.Send(new GetAccountQuery(request.SourceAccountNumber)).Result;
-            if (sourceAccount == null) 
+            if (sourceAccount == null)
             {
-                sourceAccount = new AccountDto
-                {
-                    AccountNumber = request.SourceAccountNumber,
-                    AccountType = request.SourceAccountType,
-                    Balance = 0M
-                };
-                sourceIsPresent = false;
+                isSourcePresent = false;
             }
-                
-
             var destinationAccount = _mediator.Send(new GetAccountQuery(request.DestinationAccountNumber)).Result;
             if (destinationAccount == null)
             {
-                destinationAccount = new AccountDto
-                {
-                    AccountNumber = request.DestinationAccountNumber,
-                    AccountType = request.DestinationAccountType,
-                    Balance = 0M,
-                };
-                destinationIsPresent = false;
+                isDestinationPresent = false;
             }
-
-            var result = await _helper.FormAccountEntryResponse(sourceAccount, destinationAccount,request.OperationId, request.Amount, request.ActualDate,request.Purpose, sourceIsPresent,destinationIsPresent);
-            if (result is ResponseErrorDto)
-                return result;
-            
-   
-            return result;
+            var check = DateTimeOffset.Compare(DateTimeOffset.Now.Date, request.ActualDate.Date);
+            return check switch
+            {
+                1 => null,
+                -1 => await _bufferHelper.AddBuferEntry(sourceAccount,destinationAccount, request, isSourcePresent,isDestinationPresent, cancellationToken),
+                _ => await _helper.CreateAccountHistoryTransferEntry(sourceAccount,destinationAccount, request, cancellationToken),
+            };
         }
     }
 

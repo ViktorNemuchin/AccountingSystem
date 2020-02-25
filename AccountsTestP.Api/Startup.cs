@@ -38,16 +38,19 @@ namespace AccountsTestP.Api
             });
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountsHistoryRepository, AccountHistoryRepository>();
-            services.AddScoped<IAccountDxos, AccountDxos>();
-            services.AddScoped<IAccountHistoryDxos, AccountHistoryDxos>();
+            services.AddScoped<IAccountHistoryBufferRepository, AccountHistoryBufferRepository>();
+            services.AddSingleton<IAccountDxos, AccountDxos>();
+            services.AddSingleton<IAccountHistorySingleDxos, AccountHistorySingleDxos>();
+            services.AddSingleton<IAccountHistoryDxos, AccountHistoryDxos>();
             services.AddMediatR(typeof(AccountsTestP.Service.Services.GetAccountHistoryHandler).Assembly);
             services.AddControllers(options =>
                options.Filters.Add(new HttpResponseExceptionFilter()));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web Api Router", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Сервис регистрации проводок", Version = "v1" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -66,7 +69,7 @@ namespace AccountsTestP.Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web Api Router v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Сервис регистрации проводок v1");
                 c.RoutePrefix = string.Empty;
             });
             app.UseRouting();

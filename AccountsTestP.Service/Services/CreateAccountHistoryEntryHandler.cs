@@ -4,6 +4,7 @@ using AccountsTestP.Domain.Dtos;
 using AccountsTestP.Domain.Queries;
 using AccountsTestP.Service.Helper;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,33 +15,39 @@ namespace AccountsTestP.Service.Services
     {
         private readonly IAccountsHistoryRepository _accountsHistoryRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly IAccountHistoryBufferRepository _accountHistoryBufferRepository;
         private readonly IMediator _mediator;
-        private readonly AccountHistoryHelper _helper;
-        public CreateAccountHistoryEntryHandler(IMediator mediator, IAccountRepository accountRepository, IAccountsHistoryRepository accountsHistoryRepository)
+        private readonly CreateAccountHistoryHelper _helper;
+        private readonly AccountHistoryBufferHelper _bufferHelper;
+        public CreateAccountHistoryEntryHandler(IMediator mediator, 
+            IAccountRepository accountRepository, 
+                                                IAccountsHistoryRepository accountsHistoryRepository, 
+                                                IAccountHistoryBufferRepository accountHistoryBufferRepository )
         {
             _accountRepository = accountRepository;
             _accountsHistoryRepository = accountsHistoryRepository;
+            _accountHistoryBufferRepository = accountHistoryBufferRepository;
             _mediator = mediator;
-            _helper = new AccountHistoryHelper(_accountRepository, _accountsHistoryRepository);
+            _helper = new CreateAccountHistoryHelper(_accountsHistoryRepository,_accountRepository);
+            _bufferHelper = new AccountHistoryBufferHelper(_accountHistoryBufferRepository, _accountRepository);
         }
+        
 
         public async Task<ResponseBaseDto> Handle(CreateAccountHistoryEntryCommand request, CancellationToken cancellationToken)
         {
-  
             var account = _mediator.Send(new GetAccountQuery(request.AccountNumber)).Result;
-            if (account == null) 
+            var isPresent = true;
+            if(account == null) 
             {
-                var createAccount = new AccountDto
-                {
-                    AccountNumber = request.AccountNumber,
-                    AccountType = request.AccountType,
-                    Balance = 0M
-                };
-                return await _helper.FormAccountEntryResponse(createAccount, request.OperationId,  request.Amount, request.IsTopUp, request.ActualDate,request.Purpose, false);
+                isPresent = false;
             }
-               
-            return await _helper.FormAccountEntryResponse(account,request.OperationId, request.Amount, request.IsTopUp, request.ActualDate,request.Purpose, true);
-
+            var check = DateTime.Compare(DateTime.Now.Date, request.ActualDate.Date);
+            return check switch
+            {
+                1 => null,
+                -1 => await _bufferHelper.AddBuferEntry(account,request, isPresent, cancellationToken),
+                _ => await _helper.CreateAccountHistorySoloEntry(account, request, cancellationToken),
+            };
         }
     }
 

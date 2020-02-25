@@ -7,6 +7,7 @@ namespace AccountsTestP.Domain.Models
         public string AccountNumber { get; private set; }
         public decimal Balance { get; private set; }
         public int AccountType { get; private set; }
+        public DateTimeOffset CreatedAt { get; private set; } = DateTimeOffset.Now.ToUniversalTime();
         public AccountModel(string accountNumber, decimal balance, int accountType)
         { 
             AccountNumber = accountNumber;

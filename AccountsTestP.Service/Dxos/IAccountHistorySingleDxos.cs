@@ -7,8 +7,8 @@ using System.Text;
 
 namespace AccountsTestP.Service.Dxos
 {
-    public interface IAccountCommandDxos
+    public interface IAccountHistorySingleDxos
     {
-        public AccountModel MapAccountModel(CreateAccountCommand entry);
+        public AccountHistoryDto MapAccountHistoryModel(AccountHistoryModel entry);
     }
 }

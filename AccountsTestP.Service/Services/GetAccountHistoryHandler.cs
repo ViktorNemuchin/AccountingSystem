@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AccountsTestP.Domain.Models;
 
 namespace AccountsTestP.Service.Services
 {
@@ -25,12 +26,7 @@ namespace AccountsTestP.Service.Services
             var accountEntryList = await _accountsHistoryRepository.GetListAsync(request.AccountId);
             if (accountEntryList.Count != 0)
             {
-                var accountHistoryDtoList = new List<AccountHistoryDto>();
-                foreach (var entry in accountEntryList)
-                {
-                    accountHistoryDtoList.Add(_accountHistoryDxos.MapAccountHistoryDto(entry));
-                };
-                accountHistoryDtoList.Reverse();
+                var accountHistoryDtoList = _accountHistoryDxos.MapAccountHistoryDto(accountEntryList);                 
                 return new ResponseOkDto<List<AccountHistoryDto>>
                 {
                     Status = "Ok",
