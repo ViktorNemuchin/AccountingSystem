@@ -1,5 +1,0 @@
-C:\Users\nemukhin.v\source\repos\AccountsTestP\AccountsTestP.Api\AccountsTestP\AccountsTestP.Data\bin\Debug\netcoreapp3.1\AccountsTestP.Data.deps.json
-C:\Users\nemukhin.v\source\repos\AccountsTestP\AccountsTestP.Api\AccountsTestP\AccountsTestP.Data\bin\Debug\netcoreapp3.1\AccountsTestP.Data.dll
-C:\Users\nemukhin.v\source\repos\AccountsTestP\AccountsTestP.Api\AccountsTestP\AccountsTestP.Data\obj\Debug\netcoreapp3.1\AccountsTestP.Data.csprojAssemblyReference.cache
-C:\Users\nemukhin.v\source\repos\AccountsTestP\AccountsTestP.Api\AccountsTestP\AccountsTestP.Data\obj\Debug\netcoreapp3.1\AccountsTestP.Data.AssemblyInfoInputs.cache
-C:\Users\nemukhin.v\source\repos\AccountsTestP\AccountsTestP.Api\AccountsTestP\AccountsTestP.Data\obj\Debug\netcoreapp3.1\AccountsTestP.Data.AssemblyInfo.cs
