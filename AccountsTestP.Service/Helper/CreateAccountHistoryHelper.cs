@@ -10,31 +10,56 @@ using System.Threading.Tasks;
 
 namespace AccountsTestP.Service.Helper
 {
+    /// <summary>
+    /// Класс вспомогательных методов для создания записи в журнале проводок 
+    /// </summary>
     public class CreateAccountHistoryHelper
     {
         private readonly AccountHistoryHelper _helper;
         private readonly IAccountsHistoryRepository _accountsHistoryRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly BaseHelper _baseHelper;
 
-
+        /// <summary>
+        /// Конструктор класса вспомогательгных методов для создания записи в журнале проводок
+        /// </summary>
+        /// <param name="accountsHistoryRepository">Объект типа класса работы с таблицей журнала проводок</param>
+        /// <param name="accountRepository">Объект типа класса работы с таблицей счетов</param>
         public CreateAccountHistoryHelper(IAccountsHistoryRepository accountsHistoryRepository, IAccountRepository accountRepository) 
         {
             _accountRepository = accountRepository;
             _accountsHistoryRepository = accountsHistoryRepository;
             _helper = new AccountHistoryHelper(_accountRepository, _accountsHistoryRepository);
+            _baseHelper = new BaseHelper(_accountRepository);
         }
+
+        /// <summary>
+        /// Созлание записи в журнале проводок
+        /// </summary>
+        /// <param name="account">DTO счета</param>
+        /// <param name="request">Сущность комманды создания записи в журнале проводки</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
         public async Task<ResponseBaseDto> CreateAccountHistorySoloEntry(AccountDto account,
                                                 CreateAccountHistoryEntryCommand request, 
                                                 CancellationToken  cancellationToken) 
         {
             if (account == null)
             {
-                var createAccount = InitiateAccount(request.AccountNumber, request.AccountType);
-                return await _helper.FormAccountEntryResponse(createAccount, request.OperationId, request.Amount, request.IsTopUp, request.ActualDate, request.Description, false);
+                var createdAccount = _baseHelper.InitiateAccount(request.AccountNumber, request.AccountType);
+                return await _helper.FormAccountEntryResponse(createdAccount, request.OperationId, request.Amount, request.IsTopUp, request.DueDate, request.Description, false);
             }
 
-            return await _helper.FormAccountEntryResponse(account, request.OperationId, request.Amount, request.IsTopUp, request.ActualDate, request.Description, true);
+            return await _helper.FormAccountEntryResponse(account, request.OperationId, request.Amount, request.IsTopUp, request.DueDate, request.Description, true);
         }
+        /// <summary>
+        /// Созлание записи в журнале проводок
+        /// </summary>
+        /// <param name="sourceAccount">DTO счета с которого совершается проводка</param>
+        /// <param name="destinationAccount">DTO счета на который совершается проводка</param>
+        /// <param name="request">Сущность комманды создания записи в журнале проводки</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
         public async Task<ResponseBaseDto> CreateAccountHistoryTransferEntry(AccountDto sourceAccount,
                                                AccountDto destinationAccount, 
                                                CreateTransferAccountCommand request,
@@ -42,21 +67,21 @@ namespace AccountsTestP.Service.Helper
         {
             bool sourceIsPresent = true;
             bool destinationIsPresent = true;
-  
             if (sourceAccount == null)
             {
-                sourceAccount = InitiateAccount(request.SourceAccountNumber, request.SourceAccountType);
+                sourceAccount = _baseHelper.InitiateAccount(request.SourceAccountNumber, request.SourceAccountType);
                 sourceIsPresent = false;
             }
 
             if (destinationAccount == null)
             {
-                destinationAccount = InitiateAccount(request.DestinationAccountNumber, request.DestinationAccountType);
+                destinationAccount = _baseHelper.InitiateAccount(request.DestinationAccountNumber, request.DestinationAccountType);
                 destinationIsPresent = false;
             }
 
-            var result = await _helper.FormAccountEntryResponse(sourceAccount, destinationAccount, request.OperationId, request.Amount, request.ActualDate, request.Description, sourceIsPresent, destinationIsPresent);
-            if (result is ResponseErrorDto)
+
+            var result = await _helper.FormAccountEntryResponse(sourceAccount, destinationAccount, request.OperationId, request.Amount, request.DueDate, request.Description, sourceIsPresent, destinationIsPresent);
+            if (result is ResponseMessageDto)
                 return result;
 
 
@@ -64,11 +89,6 @@ namespace AccountsTestP.Service.Helper
         }
 
 
-        private AccountDto InitiateAccount(string accountNumber, int accountType) => new AccountDto
-        {
-            AccountNumber = accountNumber,
-            AccountType = accountType,
-            Balance = 0M
-        };
+        
     }
 }

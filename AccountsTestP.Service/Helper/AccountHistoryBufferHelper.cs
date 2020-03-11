@@ -10,70 +10,95 @@ using System.Threading;
 
 namespace AccountsTestP.Service.Helper
 {
+    /// <summary>
+    /// Класс вспомогательных методов для работы с буфером проводок 
+    /// </summary>
     public class AccountHistoryBufferHelper
     {
         private readonly IAccountHistoryBufferRepository _accountHistoryBufferRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly BaseHelper _baseHelper;
-        
+        private readonly string message = "Запись помещена в буфер проводок";
+        private readonly string ok = "Ok";
+        /// <summary>
+        /// Конструктор класса методов для работы с буфером проводок
+        /// </summary>
+        /// <param name="accountHistoryBufferRepository"> Объект типа класса работы с таблицей буфера проводок</param>
+        /// <param name="accountRepository">Объект типа класса работы с таблицей счетов</param>
         public AccountHistoryBufferHelper(IAccountHistoryBufferRepository accountHistoryBufferRepository, IAccountRepository accountRepository)
         {
             _accountHistoryBufferRepository = accountHistoryBufferRepository;
             _accountRepository = accountRepository;
             _baseHelper = new BaseHelper(_accountRepository);
         }
-        //private Guid SaveAccount(AccountDto account)
-        //{
-        //    var accountModel = new AccountModel(account.AccountNumber, account.Balance, account.AccountType);
-        //    _accountRepository.AddAccount(accountModel);
-        //    return accountModel.Id;
-        //}
-        public async Task<ResponseBaseDto> AddBuferEntry(AccountDto account, CreateAccountHistoryEntryCommand request, bool isPresent, CancellationToken cancellationToken) 
+        /// <summary>
+        /// Созлание записи в таблице модуля проводок
+        /// </summary>
+        /// <param name="account">DTO счета</param>
+        /// <param name="request">Сущность комманды на создание счета</param>
+        /// <param name="cancellationToken">Токе отмены</param>
+        /// <returns></returns>
+        public async Task<ResponseBaseDto> AddBuferEntry(AccountDto account, 
+                                                         CreateAccountHistoryEntryCommand request, 
+                                                         CancellationToken cancellationToken) 
         {
-            
-            if (!isPresent) 
-            {
-                account.Id = await _baseHelper.SaveAccount(account,0M);
-            }
 
+            var emptyAccount = "00000000000000000000";
             if (request.IsTopUp)
             {
-                 await _accountHistoryBufferRepository.AddBufferEntry(new BufferForFutureEntriesDatesModel(Guid.Empty,account.Id, request.Amount, request.OperationId, request.ActualDate, request.Description));
+                 await _accountHistoryBufferRepository.AddBufferEntry(new BufferForFutureEntriesDatesModel(emptyAccount,
+                     request.AccountNumber,
+                     request.Amount,
+                     request.DueDate.Date,
+                     request.OperationId,
+                     0, 
+                     request.AccountType,                   
+                     request.Description));
             }
             else
             {
-                 await _accountHistoryBufferRepository.AddBufferEntry(new BufferForFutureEntriesDatesModel(account.Id,Guid.Empty, request.Amount, request.OperationId, request.ActualDate, request.Description));
+                 await _accountHistoryBufferRepository.AddBufferEntry(new BufferForFutureEntriesDatesModel(request.AccountNumber, 
+                     emptyAccount,
+                     request.Amount,
+                     request.DueDate.Date,
+                     request.OperationId,
+                     request.AccountType,
+                     0,
+                     request.Description ));
             }
             await _accountHistoryBufferRepository.SaveChangesAsync();
-            var result = new AccountTransferDto
-            {
-                AccountId = account.Id,
-                CurrentBalance = account.Balance
-            };
-            return _baseHelper.FormResponseForCreateEntrySolo(result);
+
+            return _baseHelper.FormMessageResponse(ok, message);
         }
-        public async Task<ResponseBaseDto> AddBuferEntry(AccountDto sourceAccount, AccountDto destinationAccount, CreateTransferAccountCommand request, bool isSourcePresent, bool isDestinationPresent, CancellationToken cancellationToken)
+        /// <summary>
+        /// Созлание записи в таблице модуля проводок
+        /// </summary>
+        /// <param name="sourceAccount">DTO счета с которого совершается проводка</param>
+        /// <param name="destinationAccount">DTO счета на который совершается проводка</param>
+        /// <param name="request">Сущность комманды на создание счета</param>
+        /// <param name="isSourcePresent">Присутствует ли счет с которго совершается проводка</param>
+        /// <param name="isDestinationPresent">Присутсвует ли счет на который совершается проводка</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBaseDto> AddBuferEntry(AccountDto sourceAccount,
+                                                         AccountDto destinationAccount, 
+                                                         CreateTransferAccountCommand request, 
+                                                         bool isSourcePresent, 
+                                                         bool isDestinationPresent, 
+                                                         CancellationToken cancellationToken)
         {
 
-            if (!isSourcePresent)
-            {
-                sourceAccount.Id = await _baseHelper.SaveAccount(sourceAccount, 0M);
-            }
-
-            if (!isDestinationPresent)
-            {
-                sourceAccount.Id = await _baseHelper.SaveAccount(destinationAccount, 0M);
-            }
-
-            await _accountHistoryBufferRepository.AddBufferEntry(new BufferForFutureEntriesDatesModel(sourceAccount.Id,destinationAccount.Id, request.Amount, request.OperationId, request.ActualDate, request.Description));
+            await _accountHistoryBufferRepository.AddBufferEntry(new BufferForFutureEntriesDatesModel(request.SourceAccountNumber,
+                request.DestinationAccountNumber, 
+                request.Amount, 
+                request.DueDate.Date,
+                request.OperationId,
+                request.SourceAccountType,
+                request.DestinationAccountType,
+                request.Description));
             await _accountHistoryBufferRepository.SaveChangesAsync();
-            var result = new TransactionDto
-            {
-                DestinationAccountId = destinationAccount.Id,
-                SourceAccountId =sourceAccount.Id
-
-            };
-            return _baseHelper.FormResponseForCreateEntryTransaction(result);
+            
+            return _baseHelper.FormMessageResponse(ok, message );
         }
 
     }

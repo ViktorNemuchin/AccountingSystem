@@ -22,14 +22,24 @@ namespace AccountsTestP.Data.Repositories
         public async Task<AccountHistoryModel> GetAsync(Expression<Func<AccountHistoryModel, bool>> predicate) => await _context.AccountHistory.AsNoTracking().Where(predicate).FirstOrDefaultAsync();
         public async Task<AccountHistoryModel> GetBalanceByDate(Guid accountId, DateTimeOffset date)
         {
-            var ddate = date.Date;
+           
+            var dayDate = date.Date;
 
-            var entries = await _context.AccountHistory.Where(x => x.DestinationAccountId == accountId || x.SourceAccountId == accountId).ToListAsync();
+            var entries = await _context.AccountHistory.AsNoTracking().Where(x => x.DestinationAccountId == accountId || x.SourceAccountId == accountId).ToListAsync();
 
-            return entries.Where(x => x.DueDate.Date == ddate).FirstOrDefault(); 
-        } 
+            return entries.Where(x => x.DueDate.Date == dayDate).LastOrDefault(); 
+        }
 
-        public async Task<List<AccountHistoryModel>> GetListAsync(Guid accountId) => await _context.AccountHistory.AsNoTracking().Where(x => x.SourceAccountId == accountId || x.DestinationAccountId == accountId).ToListAsync();
+        public IAsyncEnumerable<AccountHistoryModel> GetAccountHistoryFromDate(DateTimeOffset startingDate, Guid sourceAccountId, Guid destinationAccountId) => _context.AccountHistory.AsNoTracking().Where(x => x.DueDate >= startingDate).Where(x=>x.DestinationAccountId == sourceAccountId  || x.DestinationAccountId == destinationAccountId || x.SourceAccountId == sourceAccountId || x.SourceAccountId == destinationAccountId).AsAsyncEnumerable();
+        public IAsyncEnumerable<AccountHistoryModel> GetAccountHistoryFromDate(DateTimeOffset startingDate, Guid accountId) => _context.AccountHistory.AsNoTracking().Where(x => x.DestinationAccountId == accountId | x.SourceAccountId == accountId && x.DueDate > startingDate).AsAsyncEnumerable();
+        public void DeleteRangeOfAccountEntries(List<AccountHistoryModel> accountEntriesToDelete) => _context.AccountHistory.RemoveRange(accountEntriesToDelete);
+        public void DeleteAccountEntry(AccountHistoryModel accountEntry) => _context.Remove(accountEntry);
+
+        public void UpdateAccountsEntries(List<AccountHistoryModel> entries) =>_context.UpdateRange(entries);
+
+        
+
+        public async Task<List<AccountHistoryModel>> GetListAsync(Guid accountId) => await _context.AccountHistory.AsNoTracking().Where(x => x.SourceAccountId == accountId || x.DestinationAccountId == accountId).OrderBy(x=>x.DueDate).ToListAsync();
 
         public async Task<List<AccountHistoryModel>> GetListForOperationAsync(Guid operationId) => await _context.AccountHistory.AsNoTracking().Where(x => x.OperationId == operationId).ToListAsync();
         public async Task AddEntry(AccountHistoryModel entry) => await _context.AccountHistory.AddAsync(entry);

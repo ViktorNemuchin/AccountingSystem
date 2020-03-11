@@ -33,6 +33,7 @@ namespace AccountsTestP.Api.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult<ResponseBaseDto>> GetBalanceByDate(Guid accountId, [FromBody] ReportDateDto date)
         {
+            
             return await GetQuery(QueryAsync(new GetAccountBalanceByDateQuery(accountId, date.Date)).Result);
         }
         /// <summary>
@@ -54,7 +55,7 @@ namespace AccountsTestP.Api.Controllers
         }
 
         /// <summary>
-        /// Получить историю проводок по Id счета
+        /// Получить историю проводок по Id операции
         /// </summary>
         /// <param name="operationId">Id счета </param>
         /// <response code="200">Возвращает все записи проводок по указанному счету</response>
@@ -73,7 +74,7 @@ namespace AccountsTestP.Api.Controllers
         /// <summary>
         /// Операция пополнения счета. При отсутсвии счета в системе, создает новый счет и присваивает ему Id. 
         /// </summary>
-        /// <param name="account">Сущность счета. Передается в теле запроса см. AmmountOneDto scheme <see cref="AmountOneDto"/></param>
+        /// <param name="account">Сущность счета. Передается в теле запроса см. AmountOneDto scheme <see cref="AmountOneDto"/></param>
         /// <response code="200">Возвращает текущий баланс и Id счета</response>
         /// <response code="400">Возвращает ошибку если введены неверные данные. При вводе отрицательной суммы сервис отвечает 400 ошибкой.</response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
@@ -83,13 +84,13 @@ namespace AccountsTestP.Api.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult> TopUpAccount([FromBody]AmountOneDto account)
         {
-            var accountCommand = new CreateAccountHistoryEntryCommand(account.AccountNumber, Convert.ToDecimal(account.CurrentAmount), true, account.ActualDateTime, account.AccountType, account.OperationId, account.Comment);
+            var accountCommand = new CreateAccountHistoryEntryCommand(account.AccountNumber, Convert.ToDecimal(account.CurrentAmount), true, account.DueDate, account.AccountType, account.OperationId, account.Description);
             return Ok(await CommandAsync(accountCommand));
         }
         /// <summary>
-        ///  Операция снятия со счета. При отсутсвии счета в системе, создает новый счет и присваивает ему Id, если ammount = 0.В противном случае возвращает ответ 200 со статусом error и сообщением об ошибке.
+        ///  Операция снятия со счета. При отсутсвии счета в системе, создает новый счет и присваивает ему Id, если amount = 0.В противном случае возвращает ответ 200 со статусом error и сообщением об ошибке.
         /// </summary>
-        /// <param name="account">Сущность счета. Передается в теле запроса см. AmmountOneDto scheme <see cref="AmountOneDto"/></param>
+        /// <param name="account">Сущность счета. Передается в теле запроса см. AmountOneDto scheme <see cref="AmountOneDto"/></param>
         /// <response code="200">Возвращает текущий баланс и Id счета или ошибку при недостаточном балансе на счете</response>
         /// <response code="400">Возвращает ошибку если введены неверные данные При вводе отрицательной суммы сервис отвечает 400 ошибкой.</response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
@@ -99,14 +100,14 @@ namespace AccountsTestP.Api.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult> WithDrawAccount([FromBody]AmountOneDto account)
         {
-            var accountCommand = new CreateAccountHistoryEntryCommand(account.AccountNumber, Convert.ToDecimal(account.CurrentAmount), false, account.ActualDateTime, account.AccountType, account.OperationId, account.Comment);
+            var accountCommand = new CreateAccountHistoryEntryCommand(account.AccountNumber, Convert.ToDecimal(account.CurrentAmount), false, account.DueDate, account.AccountType, account.OperationId, account.Description);
             return Ok(await CommandAsync(accountCommand));
 
         }
         /// <summary>
-        ///  Операция перевода средств со счета на счет. При отсутсвии счета в системе, создает новый счет и присваивает ему Id, если ammount = 0.В противном случае возвращает ответ 200 со статусом error и сообщением об ошибке.
+        ///  Операция перевода средств со счета на счет. При отсутсвии счета в системе, создает новый счет и присваивает ему Id, если amount = 0.В противном случае возвращает ответ 200 со статусом error и сообщением об ошибке.
         /// </summary>
-        /// <param name="account">Сущность счета. Передается в теле запроса см. AmmountTransferDto scheme<see cref="AmountTransferDto"/></param>
+        /// <param name="account">Сущность счета. Передается в теле запроса см. AmountTransferDto scheme<see cref="AmountTransferDto"/></param>
         /// <response code="200">Возвращает текущий баланс и Id счета или ошибку при недостаточном балансе на счете</response>
         /// <response code="400">Возвращает ошибку если введены неверные данные. При вводе отрицательной суммы сервис отвечает 400 ошибкой.</response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
@@ -114,9 +115,9 @@ namespace AccountsTestP.Api.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult> TransferAccount([FromBody]AmountTransferDto account)
+        public async Task<ActionResult> TransferAccount(AmountTransferDto account)
         {
-            var accountCommand = new CreateTransferAccountCommand(account.SourceAccountNumber, account.DestinationAccountNumber, Convert.ToDecimal(account.CurrentAmount), account.ActualDateTime, account.SourceAccountType, account.DestinationAccountType, account.OperationId, account.Comment);
+            var accountCommand = new CreateTransferAccountCommand(account.SourceAccountNumber, account.DestinationAccountNumber, Convert.ToDecimal(account.CurrentAmount), account.DueDate, account.SourceAccountType, account.DestinationAccountType, account.OperationId, account.Description);
             return Ok(await CommandAsync(accountCommand));
 
         }

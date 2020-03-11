@@ -5,19 +5,22 @@ using System.Text.Json.Serialization;
 
 namespace AccountsTestP.Domain.Dtos
 {
+    /// <summary>
+    /// DTO проводки для десириализации JSON приходящей на метод контроллера отвечающего за транзакции 
+    /// </summary>
     public class AmountTransferDto
     {
         /// <summary>
         /// Номер счета с которго переводят денежные средства. Указываются только числа. Размер строки 20 символов
         /// </summary>
         [JsonPropertyName("source_account_number")]
-        [CustomValidationAttribute(typeof(AccountNumberValidation), nameof(AccountNumberValidation.AccountNumberValidate))]
+        //[CustomValidationAttribute(typeof(AccountNumberValidation), nameof(AccountNumberValidation.AccountNumberValidate))]
         public string SourceAccountNumber { get; set; }
         /// <summary>
         /// Номер счета на который переводят денежные средства. Указываются только числа. Размер строки 20 символов
         /// </summary>
         [JsonPropertyName("destination_account_number")]
-        [CustomValidationAttribute(typeof(AccountNumberValidation), nameof(AccountNumberValidation.AccountNumberValidate))]
+        //[CustomValidationAttribute(typeof(AccountNumberValidation), nameof(AccountNumberValidation.AccountNumberValidate))]
         public string DestinationAccountNumber { get; set; }
         /// <summary>
         /// Сумма операции. Не должна быть меньше 0
@@ -30,8 +33,8 @@ namespace AccountsTestP.Domain.Dtos
         /// <summary>
         /// Дата и время влияния на изменения в проводке
         /// </summary>
-        [JsonPropertyName("actual_date")]
-        public DateTimeOffset ActualDateTime { get; set; }
+        [JsonPropertyName("due_date")]
+        public DateTimeOffset DueDate { get; set; }
         /// <summary>
         /// Id операции
         /// </summary>
@@ -50,7 +53,7 @@ namespace AccountsTestP.Domain.Dtos
         /// <summary>
         /// Комментарии по счету
         /// </summary>
-        [JsonPropertyName("comment")]
-        public string Comment { get; set; }
+        [JsonPropertyName("descriprtion")]
+        public string Description { get; set; }
     }
 }

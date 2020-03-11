@@ -2,8 +2,16 @@
 packages/
 
 # all temp dynamic directories
-**/bin
+**/Account.TestP.Api/bin
+**/Account.TestP.Data/bin
+**/Account.TestP.Domain/bin
+**/Account.TestP.Service/bin
+**/Account.TestP.Api/obj
+**/Account.TestP.Data/obj
+**/Account.TestP.Domain/obj
+**/Account.TestP.Service/obj
 **/obj
+**/bin
 
 # VS studio config files
 **/.vs

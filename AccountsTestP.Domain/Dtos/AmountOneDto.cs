@@ -7,12 +7,15 @@ using System.Text.Json.Serialization;
 
 namespace AccountsTestP.Domain.Dtos
 {
+    /// <summary>
+    /// DTO проводки для десериализации JSON входящей в метод контроллера на пополнение или списания со счета 
+    /// </summary>
     public class AmountOneDto
     {
         /// <summary>
-        /// Номер счета. Указываются только числа. Размер строки 20 символов
+        /// Номер счета. Указываются только числа. 
         /// </summary>
-        [CustomValidationAttribute(typeof(AccountNumberValidation), nameof(AccountNumberValidation.AccountNumberValidate))]
+        //[CustomValidationAttribute(typeof(AccountNumberValidation), nameof(AccountNumberValidation.AccountNumberValidate))]
         public string AccountNumber { get; set; }
         
         /// <summary>
@@ -27,9 +30,9 @@ namespace AccountsTestP.Domain.Dtos
         /// <summary>
         /// Дата и время влияния на изменения в проводке
         /// </summary>
-        [JsonPropertyName("actual_date_time")]
+        [JsonPropertyName("due_date")]
         [Required]
-        public DateTimeOffset ActualDateTime { get; set; }
+        public DateTimeOffset DueDate { get; set; }
         /// <summary>
         /// Id операции
         /// </summary>
@@ -44,7 +47,7 @@ namespace AccountsTestP.Domain.Dtos
         /// <summary>
         /// Комментарии по счету
         /// </summary>
-        [JsonPropertyName("comment")]
-        public string Comment { get; set; }
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
     }
 }

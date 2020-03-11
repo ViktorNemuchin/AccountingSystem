@@ -110,14 +110,14 @@ namespace AccountsTestP.Api.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTimeOffset>("CreationDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("DestinationAccountId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("DestinationAccountNumber")
+                        .HasColumnType("text");
+
+                    b.Property<int>("DestinationAccountType")
+                        .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("DueDate")
                         .HasColumnType("timestamp with time zone");
@@ -125,8 +125,11 @@ namespace AccountsTestP.Api.Migrations
                     b.Property<Guid>("OperationId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("SourceAccountId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("SourceAccountNumber")
+                        .HasColumnType("text");
+
+                    b.Property<int>("SourceAccountType")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

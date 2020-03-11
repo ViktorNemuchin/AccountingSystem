@@ -3,9 +3,19 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace AccountsTestP.Api.Helpers
 {
+    /// <summary>
+    /// Класс вспомогательных методов для фильтра обработки исключений
+    /// </summary>
     public class FilterHelper
     {
+        /// <summary>
+        /// Конструктор класса вспомогательных методов для фильтра обработки исключений
+        /// </summary>
         public FilterHelper() { }
+        /// <summary>
+        /// Метод обработки исключений при неправильной работе сервисов 
+        /// </summary>
+        /// <param name="context">Текущий Http контекст</param>
         public void ExceptionHandling(ActionExecutedContext context)
         {
             if (context.Exception != null)
@@ -18,6 +28,10 @@ namespace AccountsTestP.Api.Helpers
                 context.ExceptionHandled = true;
             }
         }
+        /// <summary>
+        /// Метод обработки пустых ответов на запросы 
+        /// </summary>
+        /// <param name="context">Текущий Http контекст</param>
         public void NoContentHandling(ActionExecutedContext context)
         {
             var result = context.Result as ObjectResult;

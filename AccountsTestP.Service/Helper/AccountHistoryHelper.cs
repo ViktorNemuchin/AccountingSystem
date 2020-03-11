@@ -7,30 +7,47 @@ using System.Threading.Tasks;
 
 namespace AccountsTestP.Service.Helper
 {
+    /// <summary>
+    /// Класс вспомогательных методов для работы со счетами
+    /// </summary>
     public class AccountHistoryHelper
     {
         private readonly IAccountsHistoryRepository _accountsHistoryRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly BaseHelper _helper;
+        private readonly string _errorStatus = "Error";
+        private readonly string _message = "Баланс одного из счетов при пересчете стал ниже нуля";
 
 
+        /// <summary>
+        /// Конструктор класса методов для работы со счетами
+        /// </summary>
+        /// <param name="accountRepository">Объект типа класса работы с таблицей счетов</param>
+        /// <param name="accountsHistoryRepository">Объект типа класса работы с таблицей журнала проводок</param>
         public AccountHistoryHelper(IAccountRepository accountRepository, IAccountsHistoryRepository accountsHistoryRepository)
         {
             _accountsHistoryRepository = accountsHistoryRepository;
             _accountRepository = accountRepository;
+            _helper = new BaseHelper(_accountRepository);
+
         }
 
-        private ResponseOkDto<TransactionDto> FormResponseForCreateEntry(TransactionDto result) => new ResponseOkDto<TransactionDto>
-        {
-            Status = "Ok",
-            Result = result
-        };
- 
-        
+        /// <summary>
+        /// Добавление записи об изменении счета
+        /// </summary>
+        /// <param name="account">DTO счета</param>
+        /// <param name="operationId">Id операции</param>
+        /// <param name="amount">Сумма изменения по счету</param>
+        /// <param name="isTopUp">Проверка действмя</param>
+        /// <param name="dueDate">Дата влияния на счет</param>
+        /// <param name="description">Описание</param>
+        /// <param name="accountPresent">Нужно ли создавать счет</param>
+        /// <returns></returns>
         public async Task<ResponseBaseDto> FormAccountEntryResponse(AccountDto account,
                                                                     Guid operationId, 
                                                                     decimal amount, 
                                                                     bool isTopUp, 
-                                                                    DateTimeOffset actualDate,
+                                                                    DateTimeOffset dueDate,
                                                                     string description, 
                                                                     bool accountPresent)
         {
@@ -39,32 +56,26 @@ namespace AccountsTestP.Service.Helper
             AccountHistoryModel entry;
             if (isTopUp)
             {
-                balance = TopUpBalance(initialBalance, amount);
-                
+                balance = _helper.TopUpBalance(initialBalance, amount);      
             }
             else
             {
-                if (ValidateAmmount(initialBalance, amount))
-                {
-                    return new ResponseErrorDto
-                    {
-                        Status = "error",
-                        Message = "You can't withdraw so much amount of money."
-                    };
-                }
+                if (_helper.ValidateAmmount(initialBalance, amount))
+                    return _helper.FormMessageResponse(_errorStatus, _message);
                 else
-                { 
-                    balance = WithDrawlBalance(initialBalance, amount);
-                }
+                    balance = _helper.WithDrawlBalance(initialBalance, amount);
             }
                 
             
             if (accountPresent)
-                UpdateAccount(account, balance);
+                _helper.UpdateAccount(account, balance);
             else
-                account.Id = SaveAccount(account, balance);
+                account.Id = await _helper.SaveAccount(account, balance);
+            if (isTopUp) 
+                entry = new AccountHistoryModel(Guid.Empty, account.Id, amount, balance, dueDate, operationId, description);
+            else
+                entry = new AccountHistoryModel(account.Id, amount, balance, dueDate,description, operationId);
 
-            entry = new AccountHistoryModel(Guid.Empty, account.Id, amount, balance, actualDate, operationId, description);
             await _accountsHistoryRepository.AddEntry(entry);
 
             if (await _accountsHistoryRepository.SaveChangesAsync() == 0)
@@ -76,40 +87,61 @@ namespace AccountsTestP.Service.Helper
                 AccountId = account.Id,
                 CurrentBalance = balance
             };
-            return FormResponseForCreateEntry(result);
+            return _helper.FormResponseForCreateEntrySolo(result);
         }
 
-
+        /// <summary>
+        /// Добавление записи об изменении счета
+        /// </summary>
+        /// <param name="sourceAccount">DTO счета с которого совершается проводка</param>
+        /// <param name="destinationAccount">DTO счета с на который совершается проводка</param>
+        /// <param name="operationId">Id операции</param>
+        /// <param name="amount">Сумма проводки </param>
+        /// <param name="dueDateDate">Дата влия ния на проводку</param>
+        /// <param name="description">Описание проводки</param>
+        /// <param name="isSourcePresent">Присутствует ли счет с которго совершается проводка</param>
+        /// <param name="isDestinationPresent">Присутсвует ли счет на который совершается проводка</param>
+        /// <returns></returns>
         public async Task<ResponseBaseDto> FormAccountEntryResponse(AccountDto sourceAccount,
                                                                    AccountDto destinationAccount,
                                                                    Guid operationId, 
                                                                    decimal amount, 
-                                                                   DateTimeOffset actualDate, 
-                                                                   string comment, 
-                                                                   bool sourceAccountPresent, 
-                                                                   bool destinationAccountIsPresent)
+                                                                   DateTimeOffset dueDate, 
+                                                                   string description, 
+                                                                   bool isSourcePresent, 
+                                                                   bool isDestinationPresent)
         {
+            var emptyAccount = "00000000000000000000";
             var initialSourceBalance = sourceAccount.Balance;
             var initialDestinationBalance = destinationAccount.Balance;
             var sourceBalance = new decimal();
-            if (ValidateAmmount(initialSourceBalance, amount))
-                return FormErrorResponse("Error", "You can't withdraw so much amount of money.");
-            else
-                sourceBalance = WithDrawlBalance(initialSourceBalance, amount);
-            
-            if (sourceAccountPresent)
-                UpdateAccount(sourceAccount, sourceBalance);
-            else
-               sourceAccount.Id = SaveAccount(sourceAccount, sourceBalance);
-            
-            var destinationBalance = TopUpBalance(initialDestinationBalance, amount);
-            if (destinationAccountIsPresent)
-                UpdateAccount(destinationAccount, destinationBalance);
-            else
-                destinationAccount.Id = SaveAccount(destinationAccount, destinationBalance);
-            
+            var destinationBalance = new decimal();
+            if (sourceAccount.AccountNumber != emptyAccount) 
+            {
+                if (_helper.ValidateAmmount(initialSourceBalance, amount))
+                    return _helper.FormMessageResponse(_errorStatus, _message);
+                else
+                    sourceBalance = _helper.WithDrawlBalance(initialSourceBalance, amount);
 
-            var entry = new AccountHistoryModel(destinationAccount.Id, sourceAccount.Id, amount, sourceBalance, destinationBalance, actualDate, comment, operationId);
+                if (isSourcePresent)
+                    _helper.UpdateAccount(sourceAccount, sourceBalance);
+                else
+                    sourceAccount.Id = await _helper.SaveAccount(sourceAccount, sourceBalance);
+            }
+            
+                
+            if (destinationAccount.AccountNumber != emptyAccount) 
+            {
+                destinationBalance = _helper.TopUpBalance(initialDestinationBalance, amount);
+                if (isDestinationPresent)
+                    _helper.UpdateAccount(destinationAccount, destinationBalance);
+                else
+                    destinationAccount.Id = await _helper.SaveAccount(destinationAccount, destinationBalance);
+            }
+
+
+
+            var entry = new AccountHistoryModel(destinationAccount.Id, sourceAccount.Id, amount, sourceBalance, destinationBalance, dueDate, description, operationId);
             await _accountsHistoryRepository.AddEntry(entry);
 
             if (await _accountsHistoryRepository.SaveChangesAsync() == 0)
@@ -122,40 +154,7 @@ namespace AccountsTestP.Service.Helper
                 SourceAccountId = sourceAccount.Id,
 
             };
-            return FormResponseForCreateEntry(result);
-        }
-
-        
-        
-        private decimal WithDrawlBalance(decimal balanceIn, decimal ammountIn) => balanceIn - ammountIn;
-
-        private decimal TopUpBalance(decimal balanceIn, decimal ammountIn) => balanceIn + ammountIn;
-
-        private bool ValidateAmmount(decimal balanceIn, decimal ammountIn) => ammountIn > balanceIn;
-
-        private ResponseOkDto<AccountTransferDto> FormResponseForCreateEntry(AccountTransferDto result) => new ResponseOkDto<AccountTransferDto>
-        {
-            Status = "Ok",
-            Result = result
-        };
-
-        private ResponseErrorDto FormErrorResponse(string status, string message) => new ResponseErrorDto
-        {
-            Status = status,
-            Message = message
-        };
-
-        private Guid SaveAccount(AccountDto account, decimal balance)
-        {
-            var accountModel = new AccountModel(account.AccountNumber, balance, account.AccountType);
-            _accountRepository.AddAccount(accountModel);
-            return accountModel.Id;
-        }
-
-        private void UpdateAccount(AccountDto account, decimal balance)
-        {
-            var accountModel = new AccountModel(account.Id, account.AccountNumber, balance, account.AccountType);
-            _accountRepository.Update(accountModel);
+            return _helper.FormResponseForCreateEntryTransaction(result);
         }
     }
 }

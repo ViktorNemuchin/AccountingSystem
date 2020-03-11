@@ -35,6 +35,7 @@ namespace AccountsTestP.Api
 
                 options.UseNpgsql(Configuration.GetConnectionString("Pstgr"),
                     npsqlOptions => npsqlOptions.MigrationsAssembly("AccountsTestP.Api"));
+                options.EnableSensitiveDataLogging();
             });
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountsHistoryRepository, AccountHistoryRepository>();
