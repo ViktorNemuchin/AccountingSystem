@@ -3,16 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountsTestP.Api", "AccountsTestP.Api\AccountsTestP.Api.csproj", "{19EC30EF-5954-41B4-8FBD-196A9229A9CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountsTestP.Api", "AccountsTestP.Api\AccountsTestP.Api.csproj", "{19EC30EF-5954-41B4-8FBD-196A9229A9CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountsTestP.Domain", "AccountsTestP.Domain\AccountsTestP.Domain.csproj", "{486E5D29-5797-4992-9555-BF0CE4DE956A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountsTestP.Domain", "AccountsTestP.Domain\AccountsTestP.Domain.csproj", "{486E5D29-5797-4992-9555-BF0CE4DE956A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountsTestP.Data", "AccountsTestP.Data\AccountsTestP.Data.csproj", "{E6929C63-4B1C-4E03-A5D6-E3502714E569}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountsTestP.Data", "AccountsTestP.Data\AccountsTestP.Data.csproj", "{E6929C63-4B1C-4E03-A5D6-E3502714E569}"
 	ProjectSection(ProjectDependencies) = postProject
 		{486E5D29-5797-4992-9555-BF0CE4DE956A} = {486E5D29-5797-4992-9555-BF0CE4DE956A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountsTestP.Service", "AccountsTestP.Service\AccountsTestP.Service.csproj", "{A253099D-D1C2-4D51-91A8-F6976B8ED682}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountsTestP.Service", "AccountsTestP.Service\AccountsTestP.Service.csproj", "{A253099D-D1C2-4D51-91A8-F6976B8ED682}"
 	ProjectSection(ProjectDependencies) = postProject
 		{486E5D29-5797-4992-9555-BF0CE4DE956A} = {486E5D29-5797-4992-9555-BF0CE4DE956A}
 	EndProjectSection

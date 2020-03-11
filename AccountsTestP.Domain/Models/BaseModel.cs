@@ -1,11 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AccountsTestP.Domain.Models
 {
+    /// <summary>
+    /// Базовая модель описания таблицы
+    /// </summary>
     public class BaseModel
     {
-       public int Id { get; set; }
+        /// <summary>
+        /// Id таблицы 
+        /// </summary>
+        public Guid Id { get; set; }
     }
 }

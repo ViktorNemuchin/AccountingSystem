@@ -1,31 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using AccountsTestP.Data.IRepositories;
 using AccountsTestP.Domain.Dtos;
 using AccountsTestP.Domain.Queries;
 using AccountsTestP.Service.Dxos;
-using AccountsTestP.Data.IRepositories;
 using MediatR;
-using System.Threading.Tasks;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace AccountsTestP.Service.Services
 {
-    public class GetAccountHandler:IRequestHandler<GetAccountQuery, AccountDto> 
+    /// <summary>
+    /// Класс handler'а запроса на получение текущей информации по счету по  Id счета
+    /// </summary>
+    public class GetAccountHandler : IRequestHandler<GetAccountQuery, AccountDto>
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IAccountDxos _accountDxos;
-        public GetAccountHandler(IAccountDxos accountDxos, IAccountRepository accountRepository ) 
+        /// <summary>
+        /// Конструктор handler'а запроса на получение текущей информации по счету по  Id счета
+        /// </summary>
+        /// <param name="accountDxos">Объект экземпляра класса методов для преобразования сущности модели счета в с DTO счета для передачи</param>
+        /// <param name="accountRepository">Объект класса работы с таблицей счетов<</param>
+        public GetAccountHandler(IAccountDxos accountDxos, IAccountRepository accountRepository)
         {
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
             _accountDxos = accountDxos ?? throw new ArgumentNullException(nameof(accountDxos));
         }
-
+        /// <summary>
+        /// Handler запроса на получение текущей информации по счету по  Id счета
+        /// </summary>
+        /// <param name="request">Объект запроса на получение текущей информации по счету по  Id счета</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
         public async Task<AccountDto> Handle(GetAccountQuery request, CancellationToken cancellationToken)
         {
-            
             {
-                var account = await _accountRepository.GetAsync(e => e.Id == request.AccountId);
+                var account = await _accountRepository.GetAsync(e => e.AccountNumber == request.AccountNumber);
                 if (account != null)
                 {
                     var accountDto = _accountDxos.MapAccountDto(account);
@@ -33,6 +43,6 @@ namespace AccountsTestP.Service.Services
                 }
                 return null;
             }
-         }
+        }
     }
 }

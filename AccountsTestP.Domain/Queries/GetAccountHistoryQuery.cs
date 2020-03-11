@@ -1,18 +1,24 @@
 ﻿using AccountsTestP.Domain.Dtos;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AccountsTestP.Domain.Queries
 {
-    public class GetAccountHistoryQuery: QueryBase<ResponseBaseDto>
+    /// <summary>
+    /// Класс запроса на получения списка всех проводок для указанного счета
+    /// </summary>
+    public class GetAccountHistoryQuery : QueryBase<ResponseBaseDto>
     {
-        public GetAccountHistoryQuery() { }
-        public GetAccountHistoryQuery(int accountId) 
+        /// <summary>
+        /// Конструктор запроса на получение списка всех проводок для указанного счета
+        /// </summary>
+        /// <param name="accountId">Id счета</param>
+        public GetAccountHistoryQuery(Guid accountId)
         {
             AccountId = accountId;
         }
-
-        public int AccountId { get; set; }
+        /// <summary>
+        /// Id счета
+        /// </summary>
+        public Guid AccountId { get; set; }
     }
 }

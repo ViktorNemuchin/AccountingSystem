@@ -1,14 +1,16 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace AccountsTestP.Domain.Dtos
 {
-    public class ResponseOkDto<T>:ResponseBaseDto
+    /// <summary>
+    /// DTO результата успешно выполненного запроса или команды
+    /// </summary>
+    /// <typeparam name="T">Тип объекта выводимой информации</typeparam>
+    public class ResponseOkDto<T> : ResponseBaseDto
     {
-
+        /// <summary>
+        /// Результат запроса или команды
+        /// </summary>
         public T Result { get; set; }
 
     }

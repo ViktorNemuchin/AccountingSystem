@@ -1,17 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AccountsTestP.Domain.Dtos;
+﻿using AccountsTestP.Domain.Dtos;
+using System;
 
 namespace AccountsTestP.Domain.Queries
 {
-    public class GetAccountQuery: QueryBase<AccountDto>
+    /// <summary>
+    /// Класс запроса на полуение информации о счете по номеру счета
+    /// </summary>
+    public class GetAccountQuery : QueryBase<AccountDto>
     {
-        GetAccountQuery() { }
-        public GetAccountQuery(int accountId) 
+        /// <summary>
+        /// Конструктор запроса на получение информации о счета по номеру счета 
+        /// </summary>
+        /// <param name="accountNumber">Номер счета</param>
+        public GetAccountQuery(string accountNumber)
         {
-            AccountId = accountId;
+            AccountNumber = accountNumber;
         }
-        public int AccountId { get; set; }
+        /// <summary>
+        /// Номер счета
+        /// </summary>
+        public string AccountNumber { get; set; }
     }
 }

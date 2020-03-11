@@ -1,16 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using AccountsTestP.Domain.Models;
+using System;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using AccountsTestP.Domain.Models;
 
 namespace AccountsTestP.Data.IRepositories
 {
+    /// <summary>
+    /// Базовый класс методов для работы с таблицами Бд модуля регистрации проводок
+    /// </summary>
+    /// <typeparam name="TEntity">Сущность</typeparam>
     public interface IRepository<TEntity> : IDisposable where TEntity : BaseModel
     {
+        /// <summary>
+        /// Сохранить изменения асинхронно
+        /// </summary>
+        /// <returns></returns>
         Task<int> SaveChangesAsync();
+        /// <summary>
+        /// Сохранить изменения синхронно
+        /// </summary>
+        void SaveChanges();
     }
 }
