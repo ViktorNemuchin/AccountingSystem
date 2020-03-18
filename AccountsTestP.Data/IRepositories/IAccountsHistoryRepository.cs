@@ -56,9 +56,24 @@ namespace AccountsTestP.Data.IRepositories
         /// </summary>
         /// <param name="startingDate">Дата начала</param>
         /// <param name="accountId">Id счета</param>
-        /// <returns></returns>
+        /// <returns>Список проводок</returns>
         IAsyncEnumerable<AccountHistoryModel> GetAccountHistoryFromDate(DateTimeOffset startingDate, Guid accountId);
+        /// <summary>
+        /// Полученик списка проводок до указанной даты
+        /// </summary>
+        /// <param name="dateBy">Указанная дата</param>
+        /// <param name="accountId">Id счета</param>
+        /// <returns>Список проводок</returns>
+        IAsyncEnumerable<AccountHistoryModel> GetAccountHistoryByDate(DateTimeOffset dateBy, Guid accountId);
+        /// <summary>
+        /// Удаление списка счетов 
+        /// </summary>
+        /// <param name="entries"></param>
         void DeleteRangeOfAccountEntries(List<AccountHistoryModel> entries);
+        /// <summary>
+        /// Удаление указанного счета
+        /// </summary>
+        /// <param name="accountEntry"></param>
         void DeleteAccountEntry(AccountHistoryModel accountEntry);
         /// <summary>
         /// Внести изменения в список проводок указанных в параметре

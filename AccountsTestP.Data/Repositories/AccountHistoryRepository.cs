@@ -30,8 +30,9 @@ namespace AccountsTestP.Data.Repositories
             return entries.Where(x => x.DueDate.Date == dayDate).LastOrDefault(); 
         }
 
-        public IAsyncEnumerable<AccountHistoryModel> GetAccountHistoryFromDate(DateTimeOffset startingDate, Guid sourceAccountId, Guid destinationAccountId) => _context.AccountHistory.AsNoTracking().Where(x => x.DueDate >= startingDate).Where(x=>x.DestinationAccountId == sourceAccountId  || x.DestinationAccountId == destinationAccountId || x.SourceAccountId == sourceAccountId || x.SourceAccountId == destinationAccountId).AsAsyncEnumerable();
+        public IAsyncEnumerable<AccountHistoryModel> GetAccountHistoryFromDate(DateTimeOffset startingDate, Guid sourceAccountId, Guid destinationAccountId) => _context.AccountHistory.AsNoTracking().Where(x => x.DueDate > startingDate).Where(x=>x.DestinationAccountId == sourceAccountId  || x.DestinationAccountId == destinationAccountId || x.SourceAccountId == sourceAccountId || x.SourceAccountId == destinationAccountId).AsAsyncEnumerable();
         public IAsyncEnumerable<AccountHistoryModel> GetAccountHistoryFromDate(DateTimeOffset startingDate, Guid accountId) => _context.AccountHistory.AsNoTracking().Where(x => x.DestinationAccountId == accountId | x.SourceAccountId == accountId && x.DueDate > startingDate).AsAsyncEnumerable();
+        public IAsyncEnumerable<AccountHistoryModel> GetAccountHistoryByDate(DateTimeOffset dateBy, Guid accountId) => _context.AccountHistory.AsNoTracking().Where(x => x.DestinationAccountId == accountId | x.SourceAccountId == accountId && x.DueDate <= dateBy).AsAsyncEnumerable();
         public void DeleteRangeOfAccountEntries(List<AccountHistoryModel> accountEntriesToDelete) => _context.AccountHistory.RemoveRange(accountEntriesToDelete);
         public void DeleteAccountEntry(AccountHistoryModel accountEntry) => _context.Remove(accountEntry);
 

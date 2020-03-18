@@ -3,6 +3,7 @@ using AccountsTestP.Data.IRepositories;
 using AccountsTestP.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -26,10 +27,9 @@ namespace AccountsTestP.Data.Repositories
         }
 
 
-        public void Update(AccountModel account)
+        public void Update(List<AccountModel> account)
         {
-            _context.Accounts.Update(account);
-            _context.Entry(account).State = EntityState.Modified;
+            _context.Accounts.UpdateRange(account);
         }
 
     }

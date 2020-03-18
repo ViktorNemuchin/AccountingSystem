@@ -42,17 +42,19 @@ namespace AccountsTestP.Service.Helper
         /// <param name="balanceIn">Входящий баланс счета</param>
         /// <param name="ammountIn">Сумма изменения</param>
         /// <returns>Исходящий баланс</returns>
-        public bool ValidateAmmount(decimal balanceIn, decimal ammountIn) => ammountIn >= balanceIn;
+        public bool ValidateAmmount(decimal balanceIn, decimal ammountIn) => Decimal.Compare(ammountIn, balanceIn)>0;
         /// <summary>
         /// Обновить информацию о счете
         /// </summary>
+        /// <param name="accounts">Список счетов на изменение</param>
+        public void UpdateAccount(List<AccountModel> accounts) => _accountRepository.Update(accounts);
+        /// <summary>
+        /// создание записи в списке обновления балансов счетов
+        /// </summary>
         /// <param name="account">DTO счета</param>
-        /// <param name="balance"> Измененный баланс </param>
-        public void UpdateAccount(AccountDto account, decimal balance)
-        {
-            var accountModel = new AccountModel(account.Id, account.AccountNumber, balance, account.AccountType);
-            _accountRepository.Update(accountModel);
-        }
+        /// <param name="balance">Изменный баланс</param>
+        /// <returns>Модель записи в таблице журнала проводок</returns>
+        public AccountModel entryForUpdate(AccountDto account, decimal balance) => new AccountModel(account.Id, account.AccountNumber, balance, account.AccountType);
         /// <summary>
         /// Создание DTO ответа по результату транзакции между двумя сччетами для передачи во внешние системы
         /// </summary>
@@ -97,19 +99,18 @@ namespace AccountsTestP.Service.Helper
             return accountModel.Id;
         }
         /// <summary>
-        /// Заполненние полей нового счета  default ных данных 
+        /// Заполненние полей нового счета  default'ных данных 
         /// </summary>
         /// <param name="accountNumber">Номер счета</param>
         /// <param name="accountType">Тип счета</param>
+        /// <param name="accountIsActive">Флаг признака актиквного счета</param>
         /// <returns></returns>
-        public AccountDto InitiateAccount(string accountNumber, int accountType) => new AccountDto
+        public AccountDto InitiateAccount(string accountNumber, int accountType, bool isActive) => new AccountDto
         {
+            IsActive = isActive,
             AccountNumber = accountNumber,
             AccountType = accountType,
             Balance = 0M
         };
- 
-
-
     }
 }

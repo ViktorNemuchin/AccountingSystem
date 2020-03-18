@@ -40,6 +40,7 @@ namespace AccountsTestP.Api
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountsHistoryRepository, AccountHistoryRepository>();
             services.AddScoped<IAccountHistoryBufferRepository, AccountHistoryBufferRepository>();
+            services.AddScoped<IAccountTypeRepository,AccountTypeRepository>();
             services.AddSingleton<IAccountDxos, AccountDxos>();
             services.AddSingleton<IAccountHistorySingleDxos, AccountHistorySingleDxos>();
             services.AddSingleton<IAccountHistoryDxos, AccountHistoryDxos>();

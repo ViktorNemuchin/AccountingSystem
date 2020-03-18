@@ -1,7 +1,9 @@
 ﻿using AccountsTestP.Data.AccountDbContext;
 using AccountsTestP.Data.IRepositories;
 using AccountsTestP.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AccountsTestP.Data.Repositories
@@ -26,7 +28,15 @@ namespace AccountsTestP.Data.Repositories
 
         public async Task<int> SaveChangesAsync()
         {
-            return await _context.SaveChangesAsync();
+            try
+            {
+                return await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                ex.Entries.Single().Reload();
+                return await _context.SaveChangesAsync();
+            }
         }
     }
 }

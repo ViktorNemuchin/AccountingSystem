@@ -51,6 +51,7 @@ namespace AccountsTestP.Service.Helper
                                                                     string description, 
                                                                     bool accountPresent)
         {
+            var helperListForAccounts = new List<AccountModel>(); 
             var initialBalance = account.Balance;   
             var balance = new decimal();
             AccountHistoryModel entry;
@@ -68,16 +69,16 @@ namespace AccountsTestP.Service.Helper
                 
             
             if (accountPresent)
-                _helper.UpdateAccount(account, balance);
+                helperListForAccounts.Add(_helper.entryForUpdate(account, balance));
             else
                 account.Id = await _helper.SaveAccount(account, balance);
             if (isTopUp) 
                 entry = new AccountHistoryModel(Guid.Empty, account.Id, amount, balance, dueDate, operationId, description);
             else
                 entry = new AccountHistoryModel(account.Id, amount, balance, dueDate,description, operationId);
-
             await _accountsHistoryRepository.AddEntry(entry);
-
+            if (helperListForAccounts.Count != 0)
+                _accountRepository.Update(helperListForAccounts);
             if (await _accountsHistoryRepository.SaveChangesAsync() == 0)
                 throw new ApplicationException();
 
@@ -97,7 +98,7 @@ namespace AccountsTestP.Service.Helper
         /// <param name="destinationAccount">DTO счета с на который совершается проводка</param>
         /// <param name="operationId">Id операции</param>
         /// <param name="amount">Сумма проводки </param>
-        /// <param name="dueDateDate">Дата влия ния на проводку</param>
+        /// <param name="dueDate">Дата влия ния на проводку</param>
         /// <param name="description">Описание проводки</param>
         /// <param name="isSourcePresent">Присутствует ли счет с которго совершается проводка</param>
         /// <param name="isDestinationPresent">Присутсвует ли счет на который совершается проводка</param>
@@ -116,7 +117,8 @@ namespace AccountsTestP.Service.Helper
             var initialDestinationBalance = destinationAccount.Balance;
             var sourceBalance = new decimal();
             var destinationBalance = new decimal();
-            if (sourceAccount.AccountNumber != emptyAccount) 
+            var helperListForUpdates = new List<AccountModel>();
+            if (sourceAccount.AccountNumber != emptyAccount && sourceAccount.IsActive == false)
             {
                 if (_helper.ValidateAmmount(initialSourceBalance, amount))
                     return _helper.FormMessageResponse(_errorStatus, _message);
@@ -124,26 +126,45 @@ namespace AccountsTestP.Service.Helper
                     sourceBalance = _helper.WithDrawlBalance(initialSourceBalance, amount);
 
                 if (isSourcePresent)
-                    _helper.UpdateAccount(sourceAccount, sourceBalance);
+                    helperListForUpdates.Add(_helper.entryForUpdate(sourceAccount, sourceBalance));
                 else
                     sourceAccount.Id = await _helper.SaveAccount(sourceAccount, sourceBalance);
             }
-            
+            else if (sourceAccount.AccountNumber != emptyAccount && sourceAccount.IsActive == true) 
+            {
+                sourceBalance = _helper.TopUpBalance(initialSourceBalance, amount);
+                if (isSourcePresent)
+                    helperListForUpdates.Add(_helper.entryForUpdate(sourceAccount, sourceBalance));
+                else
+                    sourceAccount.Id = await _helper.SaveAccount(sourceAccount, sourceBalance);
+            }
+
+
+            if (destinationAccount.AccountNumber != emptyAccount && destinationAccount.IsActive == true)
+            {
+                if (_helper.ValidateAmmount(initialDestinationBalance, amount))
+                    return _helper.FormMessageResponse(_errorStatus, _message);
+                else
+                    destinationBalance = _helper.WithDrawlBalance(initialDestinationBalance, amount);
                 
-            if (destinationAccount.AccountNumber != emptyAccount) 
+                if (isDestinationPresent)
+                    helperListForUpdates.Add(_helper.entryForUpdate(destinationAccount, destinationBalance));
+                else
+                    destinationAccount.Id = await _helper.SaveAccount(destinationAccount, destinationBalance);
+            }
+            else if (destinationAccount.AccountNumber != emptyAccount && destinationAccount.IsActive == false) 
             {
                 destinationBalance = _helper.TopUpBalance(initialDestinationBalance, amount);
                 if (isDestinationPresent)
-                    _helper.UpdateAccount(destinationAccount, destinationBalance);
+                    helperListForUpdates.Add(_helper.entryForUpdate(destinationAccount, destinationBalance));
                 else
                     destinationAccount.Id = await _helper.SaveAccount(destinationAccount, destinationBalance);
             }
 
-
-
             var entry = new AccountHistoryModel(destinationAccount.Id, sourceAccount.Id, amount, sourceBalance, destinationBalance, dueDate, description, operationId);
             await _accountsHistoryRepository.AddEntry(entry);
-
+            if (helperListForUpdates.Count != 0)
+                _helper.UpdateAccount(helperListForUpdates);
             if (await _accountsHistoryRepository.SaveChangesAsync() == 0)
                 throw new ApplicationException();
 

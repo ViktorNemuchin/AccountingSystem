@@ -2,6 +2,7 @@
 using AccountsTestP.Domain.Dtos;
 using AccountsTestP.Domain.Queries;
 using AccountsTestP.Service.Dxos;
+using AccountsTestP.Service.Helper;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -17,16 +18,24 @@ namespace AccountsTestP.Service.Services
     public class GetAccountBalanceByDateHandler: IRequestHandler<GetAccountBalanceByDateQuery, ResponseBaseDto>
     {
         private readonly IAccountsHistoryRepository _accountHistoryRepository;
+        private readonly IAccountRepository _accountRepository;
         private readonly IAccountHistorySingleDxos _accountHistorySingleDxos;
+        private readonly ReportCreatorHelper _reportCreatorHelper;
+        private readonly IAccountHistoryDxos _accountHistoryDxos;
+        private readonly BaseHelper _helper;
         /// <summary>
         /// Конструктор handler'а для обработки запроса на получении баланса счета на дату  
         /// </summary>
         /// <param name="accountHistoryRepository">Объект типа класса работы с таблицей журнала проводок</param>
         /// <param name="accountHistorySingleDxos">Объект класса методов для преобразования сущности модели записи в журнале проводки в с DTO записи журнала проводки</param>
-        public GetAccountBalanceByDateHandler(IAccountsHistoryRepository accountHistoryRepository, IAccountHistorySingleDxos accountHistorySingleDxos) 
+        public GetAccountBalanceByDateHandler(IAccountsHistoryRepository accountHistoryRepository, IAccountRepository accountRepository,  IAccountHistorySingleDxos accountHistorySingleDxos, IAccountHistoryDxos accountHistoryDxos) 
         {
             _accountHistoryRepository = accountHistoryRepository;
             _accountHistorySingleDxos = accountHistorySingleDxos;
+            _accountRepository = accountRepository;
+            _accountHistoryDxos = accountHistoryDxos;
+            _reportCreatorHelper = new ReportCreatorHelper(_accountHistoryDxos, _accountHistorySingleDxos);
+            _helper = new BaseHelper(_accountRepository);
         }
         /// <summary>
         /// Handler для обработки запроса на получении баланса счета на дату
@@ -36,27 +45,9 @@ namespace AccountsTestP.Service.Services
         /// <returns></returns>
         public async Task<ResponseBaseDto> Handle(GetAccountBalanceByDateQuery request, CancellationToken cancellationToken)
         {
-            if (request.AccountId == Guid.Empty) 
-            {
+            var result = await _reportCreatorHelper.SetReportAccount(_accountHistoryRepository.GetAccountHistoryByDate(request.DateBy, request.AccountId), request.AccountId);
+            if (result == null)
                 return null;
-            }
-            var account = await _accountHistoryRepository.GetBalanceByDate(request.AccountId, request.DateBy);
-            if (account == null)
-                return null;
-            ReportAccountBalanceDto result = new ReportAccountBalanceDto();
-
-            if (account.SourceAccountId == request.AccountId) 
-            {
-                result.AccountId = account.SourceAccountId;
-                result.Balance = account.SourceAccountBalance;
-                result.DueDate = account.DueDate;
-            }
-            else 
-            {
-                result.AccountId = account.DestinationAccountId;
-                result.Balance = account.DestinationAccountBalance;
-                result.DueDate = account.DueDate;
-            }
             return new ResponseOkDto<ReportAccountBalanceDto>()
             {
                 Status = "Ok",
