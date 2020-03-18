@@ -54,25 +54,48 @@ namespace AccountsTestP.Service.Helper
                                        CreateTransferAccountCommand request,
                                        CancellationToken cancellationToken)
         {
+
+            var sourceType = (ResponseOkDto<AccountTypeModel>)await _mediator.Send(new GetAccountTypeQuery(request.SourceAccountType));
+            var destinationType = (ResponseOkDto<AccountTypeModel>)await _mediator.Send(new GetAccountTypeQuery(request.DestinationAccountType));
+            var isSourceActive = sourceType.Result.IsActive;
+            var isDestinatiomActive = destinationType.Result.IsActive;
+            var accountsForUpdate = new List<AccountHistoryModel>();
             if (sourceAccount is null && destinationAccount is null)
             {
-                return await _createAccountEntryHelper.CreateAccountHistoryTransferEntry(sourceAccount, destinationAccount, request, cancellationToken);
+                return await _createAccountEntryHelper.CreateAccountHistoryTransferEntry(sourceAccount, destinationAccount,isSourceActive,isDestinatiomActive, request, cancellationToken);
             }
-            else if (sourceAccount==null && destinationAccount is AccountDto)
+            else if (sourceAccount is null && destinationAccount is AccountDto)
             {
+                
+                if (!isSourceActive)
+                   return _helper.FormMessageResponse(_errorStatus, _message);
+                sourceAccount = _helper.InitiateAccount(request.SourceAccountNumber, request.SourceAccountType, isSourceActive);
+                var accountEntryListTask = GetListOfAccountHistoryEntries(destinationAccount.Id, request.DueDate);
+                var destinationAccountBalanceForEntry = await SetCurrentBalanceForEntry(accountEntryListTask, destinationAccount);
+                bool hasNegativeAmountAccountEntries = false;
+                if (accountEntryListTask.Result != null)
+                {
+                    var check = await IsCanNotUpdateEntry(sourceAccount.Id, destinationAccount.Id,isSourceActive,destinationAccount.IsActive, accountEntryListTask, request.DueDate, request.Amount);
+                    hasNegativeAmountAccountEntries = check;
+                }
+
+                if (!hasNegativeAmountAccountEntries)
+                    return await FormPastAccountEntryResponse(sourceAccount, destinationAccount, request, 0M , destinationAccountBalanceForEntry, false, true);
                 return _helper.FormMessageResponse(_errorStatus, _message);
             }
             else if (sourceAccount is AccountDto && destinationAccount is null) 
             {
-                destinationAccount = _helper.InitiateAccount(request.DestinationAccountNumber, request.DestinationAccountType);
+                if(isDestinatiomActive)
+                    return _helper.FormMessageResponse(_errorStatus, _message);
+                destinationAccount = _helper.InitiateAccount(request.DestinationAccountNumber, request.DestinationAccountType, isDestinatiomActive);
                 var accountEntryListTask = GetListOfAccountHistoryEntries(sourceAccount.Id, request.DueDate);
                 var sourceAccountBalanceForEntry = await SetCurrentBalanceForEntry(accountEntryListTask, sourceAccount);
-                bool hasNegativeAmmountAccountEntries = true;
+                bool hasNegativeAmmountAccountEntries = false;
                 if (accountEntryListTask.Result == null) 
                     hasNegativeAmmountAccountEntries = _helper.ValidateAmmount(sourceAccount.Balance, request.Amount);
                 else 
                 {
-                    var (check, list) = await IsCanNotUpdateEntry(sourceAccount.Id, destinationAccount.Id, accountEntryListTask, request.DueDate, request.Amount);
+                    var check = await IsCanNotUpdateEntry(sourceAccount.Id, destinationAccount.Id,isSourceActive,isDestinatiomActive, accountEntryListTask, request.DueDate, request.Amount);
                     hasNegativeAmmountAccountEntries = check;
                 }
 
@@ -85,12 +108,18 @@ namespace AccountsTestP.Service.Helper
                 var accountEntryListTask = GetListOfAccountHistoryEntries(sourceAccount.Id, destinationAccount.Id, request.DueDate);
                 var destinationAccountBalanceForEntry = await SetCurrentBalanceForEntry(accountEntryListTask, destinationAccount);
                 var sourceAccountBalanceForEntry = await SetCurrentBalanceForEntry(accountEntryListTask, sourceAccount);
-                bool hasNegativeAmmountAccountEntries = true;
-                if (accountEntryListTask.Result == null)
-                    hasNegativeAmmountAccountEntries = _helper.ValidateAmmount(sourceAccount.Balance, request.Amount);
+                bool hasNegativeAmmountAccountEntries=false;
+                if (accountEntryListTask.Result == null) 
+                {
+                    if (!sourceAccount.IsActive)
+                        hasNegativeAmmountAccountEntries = _helper.ValidateAmmount(sourceAccount.Balance, request.Amount);
+                    if (destinationAccount.IsActive)
+                        hasNegativeAmmountAccountEntries = _helper.ValidateAmmount(destinationAccount.Balance, request.Amount);
+                }
+                    
                 else
                 {
-                    var (check, list) = await IsCanNotUpdateEntry(sourceAccount.Id, destinationAccount.Id, accountEntryListTask, request.DueDate, request.Amount);
+                    var check= await IsCanNotUpdateEntry(sourceAccount.Id, destinationAccount.Id,sourceAccount.IsActive,destinationAccount.IsActive, accountEntryListTask, request.DueDate, request.Amount);
                     hasNegativeAmmountAccountEntries = check;
                 }
                 if (!hasNegativeAmmountAccountEntries)
@@ -99,6 +128,65 @@ namespace AccountsTestP.Service.Helper
             }
 
             
+        }
+        /// <summary>
+        /// Проверка возможности проведения корректировки проводки
+        /// </summary>
+        /// <param name="sourceAccount">Счет дебета</param>
+        /// <param name="destinationAccount">Счет кредита</param>
+        /// <param name="request"> Объект содержащий поля запроса</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
+        private async Task<bool> CheckAccountEntryList(AccountDto sourceAccount,
+                                       AccountDto destinationAccount,
+                                       CreateTransferAccountCommand request,
+                                       CancellationToken cancellationToken) 
+        {
+            Task<List<AccountHistoryDto>> accountEntryListTask;
+            if (sourceAccount is null)
+            {
+                var sourceType = (ResponseOkDto<AccountTypeModel>)await _mediator.Send(new GetAccountTypeQuery(request.SourceAccountType));
+                var isSourceActive = sourceType.Result.IsActive;
+                if (!isSourceActive)
+                    return true;
+
+                sourceAccount = _helper.InitiateAccount(request.SourceAccountNumber, request.SourceAccountType, isSourceActive);
+                accountEntryListTask = GetListOfAccountHistoryEntries(destinationAccount.Id, request.DueDate);
+
+                if (accountEntryListTask.Result is null)
+                    return _helper.ValidateAmmount(destinationAccount.Balance, request.Amount);
+            }
+
+            else if (destinationAccount is null)
+            {
+                var destinationType = (ResponseOkDto<AccountTypeModel>)await _mediator.Send(new GetAccountTypeQuery(request.SourceAccountType));
+                var isDestinationActive = destinationType.Result.IsActive;
+                if (!isDestinationActive)
+                    return true;
+
+                sourceAccount = _helper.InitiateAccount(request.SourceAccountNumber, request.DestinationAccountType, isDestinationActive);
+                accountEntryListTask = GetListOfAccountHistoryEntries(sourceAccount.Id, request.DueDate);
+
+                if (accountEntryListTask.Result is null)
+                    return _helper.ValidateAmmount(destinationAccount.Balance, request.Amount);
+            }
+            else
+            {
+                accountEntryListTask = GetListOfAccountHistoryEntries(sourceAccount.Id, destinationAccount.Id, request.DueDate);
+                var destinationAccountBalanceForEntry = await SetCurrentBalanceForEntry(accountEntryListTask, destinationAccount);
+                var sourceAccountBalanceForEntry = await SetCurrentBalanceForEntry(accountEntryListTask, sourceAccount);
+                if (accountEntryListTask.Result == null) 
+                {
+                    if(!sourceAccount.IsActive)
+                       return _helper.ValidateAmmount(sourceAccount.Balance, request.Amount);
+                    if (destinationAccount.IsActive)
+                        return _helper.ValidateAmmount(destinationAccount.Balance, request.Amount);
+                }
+                    
+
+            }     
+            
+            return await IsCanNotUpdateEntry(sourceAccount.Id, destinationAccount.Id, sourceAccount.IsActive, destinationAccount.IsActive, accountEntryListTask, request.DueDate, request.Amount);
         }
         /// <summary>
         /// Метод проведения корректирующей проводки в прошлое число
@@ -111,8 +199,12 @@ namespace AccountsTestP.Service.Helper
                                                CreateAccountHistoryEntryCommand request,
                                                CancellationToken cancellationToken) 
         {
+            
             if (account == null)
+            {
                 return await _createAccountEntryHelper.CreateAccountHistorySoloEntry(account, request, cancellationToken);
+
+            }
             var hasNegativeEntriesForAccount = false;
             var accountEntryListTask = GetListOfAccountHistoryEntries(account.Id, request.DueDate);
             var currentBalance = await SetCurrentBalanceForEntry(accountEntryListTask, account);
@@ -121,15 +213,24 @@ namespace AccountsTestP.Service.Helper
             
             if (request.IsTopUp) 
             {
-                var (check, list) = await IsCanNotUpdateEntry(Guid.Empty, account.Id,accountEntryListTask, request.DueDate, request.Amount);
-                hasNegativeEntriesForAccount = check;
-                accountEntryListOut = list;
+                if (accountEntryListTask.Result != null) 
+                {
+                    var check = await IsCanNotUpdateEntry(Guid.Empty, account.Id,false,false, accountEntryListTask, request.DueDate, request.Amount);
+                    hasNegativeEntriesForAccount = check; 
+                }
             }
             else 
             {
-                var (check, list) = await IsCanNotUpdateEntry(account.Id, Guid.Empty,accountEntryListTask, request.DueDate, request.Amount);
-                hasNegativeEntriesForAccount = check;
-                accountEntryListOut = list;
+                if (accountEntryListTask.Result is null) 
+                {
+                    hasNegativeEntriesForAccount = _helper.ValidateAmmount(account.Balance, request.Amount);
+                }
+                else 
+                {
+                    var check = await IsCanNotUpdateEntry(account.Id, Guid.Empty,false,false, accountEntryListTask, request.DueDate, request.Amount);
+                    hasNegativeEntriesForAccount = check;
+                }
+               
             }
             
             if (!hasNegativeEntriesForAccount) 
@@ -153,11 +254,10 @@ namespace AccountsTestP.Service.Helper
             {
                 accountEntries = accountEntries.OrderBy(x => x.DueDateTime).ToList();
                 var currentEntry = accountEntries.Where(x => x.SourceAccountId == account.Id || x.DestinationAccounId == account.Id).FirstOrDefault();
-
                 if (currentEntry == null) 
                     return account.Balance;
 
-                return GetBalance(currentEntry, account.Id);
+                return GetBalance(currentEntry, account.Id, account.IsActive);
             }
 
                 
@@ -167,14 +267,19 @@ namespace AccountsTestP.Service.Helper
         /// </summary>
         /// <param name="entry">Запись в журнале проводок </param>
         /// <param name="accountId">Id счета</param>
-        /// <returns></returns>
-        private decimal GetBalance(AccountHistoryDto entry,Guid accountId) 
+        /// <param name = "isActive">Флаг апризнака активности счета </param>
+        /// <returns>Изменный баланс для записи в журнале проводок</returns>
+        private decimal GetBalance(AccountHistoryDto entry,Guid accountId, bool isActive) 
         {
             var balance = new decimal();
-            if (accountId == entry.DestinationAccounId)
-                balance = entry.DestinationBalance - entry.Amount;
-            else if (accountId == entry.SourceAccountId)
-                balance = entry.SourceBalance + entry.Amount;
+            if (accountId == entry.DestinationAccounId && isActive == false)
+                balance = _helper.WithDrawlBalance(entry.DestinationBalance, entry.Amount);
+            else if (accountId == entry.DestinationAccounId && isActive == true)
+                balance = _helper.TopUpBalance(entry.DestinationBalance, entry.Amount);
+            else if (accountId == entry.SourceAccountId && isActive == false)
+                balance = _helper.WithDrawlBalance(entry.SourceBalance, entry.Amount);
+            else if (accountId == entry.SourceAccountId && isActive == true)
+                balance = _helper.WithDrawlBalance(entry.SourceBalance, entry.Amount);
             return balance;
         }
 
@@ -187,27 +292,32 @@ namespace AccountsTestP.Service.Helper
         /// <param name="dueDate">Время влияния проводки</param>
         /// <param name="amount">Сумма проводки</param>
         /// <returns>Возвращает true в случае невозможности проведения проводки, false - в случае возможности проведения проводки и  спсок DTO записей журнала провдок, которые затрагивает корректирующая проводка</returns>
-        private async Task<(bool check, List<AccountHistoryModel> list)> IsCanNotUpdateEntry(Guid sourceAccountId, 
-                                                                                             Guid destinationAccountId, 
+        private async Task<bool> IsCanNotUpdateEntry(Guid sourceAccountId, 
+                                                                                             Guid destinationAccountId,
+                                                                                             bool isSourceActive,
+                                                                                             bool isDestinationActive,
                                                                                              Task<List<AccountHistoryDto>> accountEntryList, 
                                                                                              DateTimeOffset dueDate, 
                                                                                              decimal amount)
         {
             var entryList = new List<AccountHistoryModel>();
 
-            await foreach (var entry in PastEntriesToInfluenceBalance(sourceAccountId,destinationAccountId, accountEntryList,  dueDate, amount))
+            await foreach (var entry in PastEntriesToInfluenceBalance(sourceAccountId,destinationAccountId,isSourceActive, isDestinationActive, accountEntryList,  dueDate, amount))
             {
                 if (entry == null)
-                    return (true, null);
+                    return true;
                 else
                 {
                     var accountEntry = new AccountHistoryModel(entry.Id, entry.DestinationAccounId, entry.SourceAccountId, entry.Amount, entry.SourceBalance, entry.DestinationBalance, entry.DueDateTime, entry.Description, entry.OperationId);
                     entryList.Add(accountEntry);
                 }
             }
-            if (entryList.Count != 0) 
+            if (entryList.Count != 0)
+            {
                 _accountsHistoryRepository.UpdateAccountsEntries(entryList);
-            return (false,entryList);
+                await _accountsHistoryRepository.SaveChangesAsync();
+            } 
+            return false;
         }
         /// <summary>
         /// Получить список записей в журнале проводок, которые затрагивают корректирующая проводка. 
@@ -232,12 +342,16 @@ namespace AccountsTestP.Service.Helper
         /// </summary>
         /// <param name="sourceAccountId">Id счета с которого совершается проводка</param>
         /// <param name="destinationAccountId">Id счета на который совершается проводка</param>
+        /// <param name="isSourceActive">Флаг признака активного типа для счета дебета</param>
+        /// <param name="isDestinationActive">Флаг признака активного типа для счета кредита</param>
         /// <param name="accountEntries">Список записей в журнале проводок</param>
         /// <param name="dueDate">Дата влияния на проводку</param>
         /// <param name="requestedAmount">Сумма влияния на записи</param>
         /// <returns>Записи из спсика проводок</returns>
         private async IAsyncEnumerable<AccountHistoryDto> PastEntriesToInfluenceBalance(Guid sourceAccountId,
                                                                                         Guid destinationAccountId,
+                                                                                        bool isSourceActive,
+                                                                                        bool isDestinationActive,
                                                                                         Task<List<AccountHistoryDto>> accountEntries, 
                                                                                         DateTimeOffset dueDate, 
                                                                                         decimal requestedAmount)
@@ -246,7 +360,7 @@ namespace AccountsTestP.Service.Helper
             var iterator = proceedingEntries.GetEnumerator();
             while (iterator.MoveNext())
             {
-                if (sourceAccountId == iterator.Current.SourceAccountId && sourceAccountId != Guid.Empty)
+                if (sourceAccountId == iterator.Current.SourceAccountId && isSourceActive == false && sourceAccountId != Guid.Empty)
                 {
                     if (_helper.ValidateAmmount(iterator.Current.SourceBalance, requestedAmount))
                     {
@@ -254,7 +368,7 @@ namespace AccountsTestP.Service.Helper
                         break;
                     }
                 }
-                if (sourceAccountId == iterator.Current.DestinationAccounId && sourceAccountId != Guid.Empty)
+                if (sourceAccountId == iterator.Current.DestinationAccounId &&isSourceActive==false && sourceAccountId != Guid.Empty)
                 {
                     if (_helper.ValidateAmmount(iterator.Current.DestinationBalance, requestedAmount))
                     {
@@ -262,7 +376,23 @@ namespace AccountsTestP.Service.Helper
                         break;
                     }
                 }
-                yield return UpdateEntry(sourceAccountId, destinationAccountId, requestedAmount, iterator.Current);
+                if (destinationAccountId == iterator.Current.SourceAccountId && isDestinationActive == true && destinationAccountId != Guid.Empty)
+                {
+                    if (_helper.ValidateAmmount(iterator.Current.SourceBalance, requestedAmount))
+                    {
+                        yield return null;
+                        break;
+                    }
+                }
+                if (destinationAccountId == iterator.Current.DestinationAccounId && isDestinationActive == true && destinationAccountId != Guid.Empty)
+                {
+                    if (_helper.ValidateAmmount(iterator.Current.DestinationBalance, requestedAmount))
+                    {
+                        yield return null;
+                        break;
+                    }
+                }
+                yield return UpdateEntry(sourceAccountId, destinationAccountId, isSourceActive,isDestinationActive,requestedAmount, iterator.Current);
             }
 
         }
@@ -274,23 +404,44 @@ namespace AccountsTestP.Service.Helper
         /// <param name="sourceAccountId">Id счета с которого совершается проводка</param>
         /// <param name="destinationAccountId">Id счета на который совершается проводка</param>
         /// <param name="requestedAmount">Сумма запрашиваемого изменения</param>
+        /// <param name="isSourceActive">Флаг признака активного типа для счета дебета</param>
+        /// <param name="isDestinationActive">Флаг признака активного типа для счета кредита</param>
         /// <param name="entry">Запись в журнале проводок на которое действует изменения </param>
         /// <returns>Возвращает измененную запись в журнале проводок</returns>
         private AccountHistoryDto UpdateEntry(Guid sourceAccountId,
-                                             Guid destinationAccountId, 
+                                             Guid destinationAccountId,
+                                             bool isSourceActive,
+                                             bool isDestinationActive,
                                              decimal requestedAmount, 
                                              AccountHistoryDto entry) 
         {
 
-            if (sourceAccountId == entry.SourceAccountId && sourceAccountId != Guid.Empty)
+            if (sourceAccountId == entry.SourceAccountId && isSourceActive == false && sourceAccountId != Guid.Empty)
                 entry.SourceBalance = _helper.WithDrawlBalance(entry.SourceBalance, requestedAmount);
-            else if (sourceAccountId == entry.DestinationAccounId && sourceAccountId != Guid.Empty)
+
+            else if (sourceAccountId == entry.DestinationAccounId && isSourceActive == false && sourceAccountId != Guid.Empty)
                 entry.DestinationBalance = _helper.WithDrawlBalance(entry.DestinationBalance, requestedAmount);
 
-            if (destinationAccountId == entry.SourceAccountId && destinationAccountId !=Guid.Empty)
+            else if (sourceAccountId == entry.SourceAccountId && isSourceActive == true && sourceAccountId != Guid.Empty)
                 entry.SourceBalance = _helper.TopUpBalance(entry.SourceBalance, requestedAmount);
-            else if(destinationAccountId == entry.DestinationAccounId && destinationAccountId != Guid.Empty)
+
+            else if (sourceAccountId == entry.DestinationAccounId && isSourceActive == true && sourceAccountId != Guid.Empty)
                 entry.DestinationBalance = _helper.TopUpBalance(entry.DestinationBalance, requestedAmount);
+
+
+
+
+            if (destinationAccountId == entry.SourceAccountId &&isDestinationActive == false &&destinationAccountId !=Guid.Empty)
+                entry.SourceBalance = _helper.TopUpBalance(entry.SourceBalance, requestedAmount);
+
+            else if(destinationAccountId == entry.DestinationAccounId &&isDestinationActive == false && destinationAccountId != Guid.Empty)
+                entry.DestinationBalance = _helper.TopUpBalance(entry.DestinationBalance, requestedAmount);
+
+            else if (destinationAccountId == entry.SourceAccountId && isDestinationActive == true && destinationAccountId != Guid.Empty)
+                entry.SourceBalance = _helper.WithDrawlBalance(entry.SourceBalance, requestedAmount);
+
+            else if (destinationAccountId == entry.DestinationAccounId && isDestinationActive == true && destinationAccountId != Guid.Empty)
+                entry.DestinationBalance = _helper.WithDrawlBalance(entry.DestinationBalance, requestedAmount);
 
             return entry;
         }
@@ -314,8 +465,8 @@ namespace AccountsTestP.Service.Helper
                                                                    DateTimeOffset dueDate,
                                                                    string description)
         {
-            
 
+            var helperListForUpdates = new List<AccountModel>();
             var balance = new decimal();
             AccountHistoryModel entry;
             if (isTopUp)
@@ -334,14 +485,14 @@ namespace AccountsTestP.Service.Helper
                 }
             }
   
-            _helper.UpdateAccount(account, account.Balance);
+            helperListForUpdates.Add (_helper.entryForUpdate(account, account.Balance));
             if (isTopUp)
                 entry = new AccountHistoryModel(Guid.Empty, account.Id, amount, balance, dueDate, operationId, description);
             else
                 entry = new AccountHistoryModel(account.Id, amount, balance, dueDate, description, operationId);
 
             await _accountsHistoryRepository.AddEntry(entry);
-
+            _helper.UpdateAccount(helperListForUpdates);
             if (await _accountsHistoryRepository.SaveChangesAsync() == 0)
                 throw new ApplicationException();
 
@@ -376,30 +527,58 @@ namespace AccountsTestP.Service.Helper
             var destinationBalance = new decimal();
             var sourceBalanceForAccount = new decimal();
             var destinationBalanceForAccount = new decimal();
-            if (_helper.ValidateAmmount(sourceAccountBalanceForEntry, request.Amount))
-                return _helper.FormMessageResponse(_errorStatus, _message);
-            else
+            var helperListForUpdates = new List<AccountModel>();
+            if (!sourceAccount.IsActive)
             {
-                sourceBalance = _helper.WithDrawlBalance(sourceAccountBalanceForEntry, request.Amount);
-                sourceBalanceForAccount = _helper.WithDrawlBalance(sourceAccount.Balance, request.Amount);
+                if (_helper.ValidateAmmount(sourceAccountBalanceForEntry, request.Amount))
+                    return _helper.FormMessageResponse(_errorStatus, _message);
+                else
+                {
+                    sourceBalance = _helper.WithDrawlBalance(sourceAccountBalanceForEntry, request.Amount);
+                    sourceBalanceForAccount = _helper.WithDrawlBalance(sourceAccount.Balance, request.Amount);
+                }
             }
+            else 
+            {
+                sourceBalance = _helper.TopUpBalance(sourceAccountBalanceForEntry, request.Amount);
+                sourceBalanceForAccount = _helper.TopUpBalance(sourceAccount.Balance, request.Amount);
+            }
+            
                 
 
             if (sourceAccountIsPresent)
-                _helper.UpdateAccount(sourceAccount, sourceBalanceForAccount);
+                helperListForUpdates.Add(_helper.entryForUpdate(sourceAccount, sourceBalanceForAccount));
             else
                 sourceAccount.Id = await _helper.SaveAccount(sourceAccount, sourceBalance);
 
-            destinationBalance = _helper.TopUpBalance(destinationAccountBalanceForEntry, request.Amount);
-            destinationBalanceForAccount = _helper.TopUpBalance(destinationAccount.Balance, request.Amount);
+
+            if (!destinationAccount.IsActive) 
+            {
+                destinationBalance = _helper.TopUpBalance(destinationAccountBalanceForEntry, request.Amount);
+                destinationBalanceForAccount = _helper.TopUpBalance(destinationAccount.Balance, request.Amount);
+                
+            }
+            else 
+            {
+                if(_helper.ValidateAmmount(destinationAccountBalanceForEntry, request.Amount))
+                    return _helper.FormMessageResponse(_errorStatus, _message);
+                else
+                {
+                    destinationBalance = _helper.WithDrawlBalance(destinationAccountBalanceForEntry, request.Amount);
+                    destinationBalanceForAccount = _helper.WithDrawlBalance(destinationAccount.Balance, request.Amount);
+                }
+            }
+
             if (destinationAccountIsPresent)
-                _helper.UpdateAccount(destinationAccount, destinationBalanceForAccount);
+                helperListForUpdates.Add(_helper.entryForUpdate(destinationAccount, destinationBalanceForAccount));
             else
                 destinationAccount.Id = await _helper.SaveAccount(destinationAccount, destinationBalance);
 
-
             var entry = new AccountHistoryModel(destinationAccount.Id, sourceAccount.Id, request.Amount, sourceBalance, destinationBalance, request.DueDate, request.Description, request.OperationId);
             await _accountsHistoryRepository.AddEntry(entry);
+
+            if (helperListForUpdates.Count != 0)
+                _accountRepository.Update(helperListForUpdates);
 
             if (await _accountsHistoryRepository.SaveChangesAsync() == 0)
                 throw new ApplicationException();

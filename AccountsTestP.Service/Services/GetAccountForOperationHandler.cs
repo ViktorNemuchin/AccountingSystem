@@ -19,6 +19,7 @@ namespace AccountsTestP.Service.Services
     {
         private readonly IAccountsHistoryRepository _accountsHistoryRepository;
         private readonly IAccountHistoryDxos _accountHistoryDxos;
+        private readonly IAccountHistorySingleDxos _accountHistorySingleDxos;
         private readonly ReportCreatorHelper _helper;
 
         /// <summary>
@@ -26,11 +27,12 @@ namespace AccountsTestP.Service.Services
         /// </summary>
         /// <param name="accountsHistoryRepository">Объект типа класса работы с таблицей журнала проводок</param>
         /// <param name="accountHistoryDxos">Объект класса методов для преобразования сущности модели записи в журнале проводки в с DTO записи журнала проводки</param>
-        public GetAccountForOperationHandler(IAccountsHistoryRepository accountsHistoryRepository, IAccountHistoryDxos accountHistoryDxos) 
+        public GetAccountForOperationHandler(IAccountsHistoryRepository accountsHistoryRepository, IAccountHistoryDxos accountHistoryDxos, IAccountHistorySingleDxos accountHistorySingleDxos) 
         {
             _accountHistoryDxos = accountHistoryDxos;
+            _accountHistorySingleDxos = accountHistorySingleDxos;
             _accountsHistoryRepository = accountsHistoryRepository;
-            _helper = new ReportCreatorHelper(_accountHistoryDxos);
+            _helper = new ReportCreatorHelper(_accountHistoryDxos,_accountHistorySingleDxos);
         }
         /// <summary>
         /// Handler для обработки запроса на получение всех проводок вхождящих в указанную по ее Id операцияю

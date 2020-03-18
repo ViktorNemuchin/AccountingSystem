@@ -3,15 +3,17 @@ using System;
 using AccountsTestP.Data.AccountDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AccountsTestP.Api.Migrations
 {
     [DbContext(typeof(AccountTestPDbContext))]
-    partial class AccountTestPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200312154204_ModifyMod")]
+    partial class ModifyMod
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

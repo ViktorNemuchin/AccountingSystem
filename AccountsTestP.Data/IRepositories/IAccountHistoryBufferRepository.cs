@@ -28,5 +28,6 @@ namespace AccountsTestP.Data.IRepositories
         /// <param name="date">Дата и время</param>
         /// <returns>Список будущих проводок на дату</returns>
         Task<List<BufferForFutureEntriesDatesModel>> GetBufferEntryForPeriod(DateTime date);
+        
     }
 }

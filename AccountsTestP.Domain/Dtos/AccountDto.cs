@@ -28,5 +28,10 @@ namespace AccountsTestP.Domain.Dtos
         /// </summary>
         [JsonPropertyName("account_type")]
         public int AccountType { get; set; }
+        /// <summary>
+        /// Флаг активного типа счета
+        /// </summary>
+        [JsonIgnore]
+        public bool IsActive { get; set; }
     }
 }

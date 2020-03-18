@@ -1,5 +1,6 @@
 ﻿using AccountsTestP.Domain.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -26,6 +27,6 @@ namespace AccountsTestP.Data.IRepositories
         /// Обновить поля записи в таблцие о  счете
         /// </summary>
         /// <param name="account">Счет с новыми  значениями полей</param>
-        void Update(AccountModel account);
+        void Update(List<AccountModel> account);
     }
 }

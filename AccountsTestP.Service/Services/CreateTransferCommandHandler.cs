@@ -1,6 +1,7 @@
 ﻿using AccountsTestP.Data.IRepositories;
 using AccountsTestP.Domain.Command;
 using AccountsTestP.Domain.Dtos;
+using AccountsTestP.Domain.Models;
 using AccountsTestP.Domain.Queries;
 using AccountsTestP.Service.Helper;
 using MediatR;
@@ -53,11 +54,13 @@ namespace AccountsTestP.Service.Services
             var sourceAccount = new AccountDto();
             var destinationAccount = new AccountDto();
 
-            
+            var isActiveSource = (ResponseOkDto<AccountTypeModel>)await _mediator.Send(new GetAccountTypeQuery(request.SourceAccountType));
+            var isActiveDestination = (ResponseOkDto<AccountTypeModel>)await _mediator.Send(new GetAccountTypeQuery(request.DestinationAccountType));
             if (request.SourceAccountNumber != emptyAccount) 
                 sourceAccount = _mediator.Send(new GetAccountQuery(request.SourceAccountNumber)).Result;
             else
             {
+                sourceAccount.IsActive = isActiveSource.Result.IsActive;
                 sourceAccount.AccountNumber = emptyAccount;
                 sourceAccount.Id = Guid.Empty;
             }
@@ -66,6 +69,7 @@ namespace AccountsTestP.Service.Services
                 destinationAccount = _mediator.Send(new GetAccountQuery(request.DestinationAccountNumber)).Result;
             else
             {
+                destinationAccount.IsActive = isActiveDestination.Result.IsActive;
                 destinationAccount.AccountNumber = emptyAccount;
                 destinationAccount.Id = Guid.Empty;
             }
@@ -76,7 +80,7 @@ namespace AccountsTestP.Service.Services
             {
                 1 => await _pastDueDateAccountEntryHelper.TryRecalculateEntriesForTransfer(sourceAccount, destinationAccount, request, cancellationToken),
                 -1 => await _bufferHelper.AddBuferEntry(sourceAccount,destinationAccount, request, isSourcePresent,isDestinationPresent, cancellationToken),
-                _ => await _helper.CreateAccountHistoryTransferEntry(sourceAccount,destinationAccount, request, cancellationToken),
+                _ => await _helper.CreateAccountHistoryTransferEntry(sourceAccount,destinationAccount,isActiveSource.Result.IsActive,isActiveDestination.Result.IsActive, request, cancellationToken),
             };
         }
     }

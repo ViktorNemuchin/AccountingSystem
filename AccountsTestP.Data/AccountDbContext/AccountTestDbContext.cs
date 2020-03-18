@@ -1,5 +1,6 @@
 ﻿using AccountsTestP.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore;
 
 namespace AccountsTestP.Data.AccountDbContext
 {/// <summary>
@@ -37,15 +38,32 @@ namespace AccountsTestP.Data.AccountDbContext
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var helper = new AccountEntityGenerator();
+            var accountTypes = helper.SetAccountTypes();
             modelBuilder
                 .Entity<AccountHistoryModel>()
                 .Property(ca => ca.CreationDate)
                 .ValueGeneratedOnAdd();
 
+
             modelBuilder
                 .Entity<AccountHistoryModel>()
                 .Property(id => id.Id)
                 .ValueGeneratedOnAdd();
+
+            modelBuilder
+               .Entity<AccountTypeModel>()
+               .HasKey(id => id.Id);
+
+            modelBuilder
+                .Entity<AccountTypeModel>()
+                .Property(id => id.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<AccountTypeModel>()
+                .HasData(accountTypes);
+                
         }
     }
 }

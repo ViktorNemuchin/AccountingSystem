@@ -29,6 +29,7 @@ namespace AccountsTestP.Domain.Models
         /// <param name="isActive">Флаг активного /пассивного счета</param>
         public AccountTypeModel(int accountTypeNumber, string accountTypeName, bool isActive) 
         {
+            Id = Guid.NewGuid();
             AccountTypeNumber = accountTypeNumber;
             AccountTypeName = accountTypeName;
             IsActive = isActive;
