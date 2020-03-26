@@ -11,6 +11,7 @@ namespace RulesForOperationProceeding.Data.IRepositories
         public Task AddOperationType(OperationTypeModel operationType);
         public Task AddOperationTypeList(List<OperationTypeModel> operationTypes);
         public Task<OperationTypeModel> GetOperationTypeById(Guid operationTypeId);
+        public IAsyncEnumerable<OperationTypeModel> GetAllOperationtypes();
         public void UpdateOperationType(OperationTypeModel operationType);
         public void DeleteOperationType(OperationTypeModel operationType);
     }

@@ -6,6 +6,7 @@ namespace RulesForOperationProceeding.Domain.DTOS
 {
     public class RuleDto
     {
+        public Guid RuleId { get; set; }
         public string SourceAccount { get; set; }
         public string DestinationAccount { get; set; }
         public string Formula { get; set; }

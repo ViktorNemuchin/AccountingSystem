@@ -5,9 +5,9 @@ using System.Text;
 
 namespace RulesForOperationProceeding.Domain.Queries
 {
-    public class GetRulesByOperationTypeId:BaseQuery<ResponseBaseDto>
+    public class GetRulesByOperationTypeIdQuery:BaseQuery<ResponseBaseDto>
     {
-        public GetRulesByOperationTypeId(Guid operationTypeId)
+        public GetRulesByOperationTypeIdQuery(Guid operationTypeId)
         {
             OperationTypeId = operationTypeId;
         }

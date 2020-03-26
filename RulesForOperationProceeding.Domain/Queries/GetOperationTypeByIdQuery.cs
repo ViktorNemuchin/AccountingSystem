@@ -5,12 +5,12 @@ using RulesForOperationProceeding.Domain.DTOS;
 
 namespace RulesForOperationProceeding.Domain.Queries
 {
-    public class GetRulesForOperationTypeQueryByOperationId:BaseQuery<RuleDto>
+    public class GetOperationTypeByIdQuery:BaseQuery<ResponseBaseDto>
     {
-        public GetRulesForOperationTypeQueryByOperationId(Guid operationId) 
+        public GetOperationTypeByIdQuery(Guid operationId) 
         {
             OperationId = operationId;
         }
-        public Guid OperationId { get; private set;}
+        public Guid OperationId { get; private set; }
     }
 }
