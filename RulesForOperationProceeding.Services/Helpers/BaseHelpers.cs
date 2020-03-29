@@ -40,10 +40,26 @@ namespace RulesForOperationProceeding.Services.Helpers
             DateFrom = ruleToConvert.DateFrom,
             OperationTypeId = ruleToConvert.OperationTypeId
         };
-        public OperationTypeDto ConvertOperationTypeModelToDTO(List<RuleDto> rules, OperationTypeModel operationType) => new OperationTypeDto
+        public OperationTypeDto ConvertOperationTypeModelToDTO(List<RuleDto> rules, List<OperationParameterDto> parameters, OperationTypeModel operationType) => new OperationTypeDto
         {
             OperationName = operationType.OperationTypeName,
-            Rules = rules
-        }; 
+            Rules = rules,
+            OperationParameters = parameters
+        };
+        public OperationParameterDto ConvertOperationParameterModelToDTO(OperationParameterModel operationParameter) => new OperationParameterDto
+        {
+            OperationParameter = operationParameter.OperationParameterValue,
+            OperationParameterName = operationParameter.OperationParameterName,
+            OperationId = operationParameter.OperationTypeId,
+            OperationParameterId = operationParameter.Id
+        };
+        public RulesModel ConvertOperationRuleDtoToModel(RuleDto rule) => 
+            new RulesModel(rule.SourceAccount, rule.DestinationAccount, rule.Formula, rule.Description, rule.DateFrom, rule.OperationTypeId);
+
+        public RulesModel ConvertOperationRuleDtoToModel(RuleDto rule, DateTimeOffset dateFrom) =>
+            new RulesModel(rule.SourceAccount, rule.DestinationAccount, rule.Formula, rule.Description, dateFrom, rule.OperationTypeId);
+
+        public OperationParameterModel ConverParameterDtoToModel(OperationParameterDto operationParameter) => 
+            new OperationParameterModel(operationParameter.OperationParameterName, operationParameter.OperationParameter, operationParameter.OperationParameterId); 
     }
 }

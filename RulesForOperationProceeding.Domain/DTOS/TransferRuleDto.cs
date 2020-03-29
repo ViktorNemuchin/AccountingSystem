@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RulesForOperationProceeding.Domain.DTOS
 {
-    public class RulesForUpdateDto
+    public class TransferRuleDto
     {
         public Guid RuleId { get; set; }
         public string SourceAccount { get; set; }
@@ -12,6 +12,5 @@ namespace RulesForOperationProceeding.Domain.DTOS
         public string Formula { get; set; }
         public string Description { get; set; }
         public DateTimeOffset DateFrom { get; set; }
-        public Guid OperationTypeId { get; set; }
     }
 }

@@ -25,6 +25,7 @@ namespace RulesForOperationProceeding.Data.Repositories
         public IAsyncEnumerable<OperationTypeModel> GetAllOperationtypes() => _context.OperationTypes.AsAsyncEnumerable();
         public void UpdateOperationType(OperationTypeModel operationType) => _context.OperationTypes.Update(operationType);
         public void DeleteOperationType(OperationTypeModel operationType) => _context.OperationTypes.Remove(operationType);
-        
+        public async Task<OperationTypeModel> GetOperationTypeByName(string operationName) => await _context.OperationTypes.Where(x => x.OperationTypeName == operationName).FirstOrDefaultAsync();
+
     }
 }

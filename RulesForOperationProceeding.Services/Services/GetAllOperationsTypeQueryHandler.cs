@@ -14,8 +14,8 @@ namespace RulesForOperationProceeding.Services.Services
     public class GetAllOperationsTypeQueryHandler : IRequestHandler<GetAllOperationTypes, ResponseBaseDto>
     {
         private readonly IOperationTypeRepository _operationTypeRepository;
-        private readonly BaseHelpers<List<OperationTypeForListDto>> _baseHelpers;
-        public GetAllOperationsTypeQueryHandler(IOperationTypeRepository operationTypeRepository, BaseHelpers<List<OperationTypeForListDto>> baseHelpers) => (_operationTypeRepository, _baseHelpers) = (operationTypeRepository, baseHelpers);
+        private readonly BaseHelpers<List<OperationTypeForListDto>> _baseHelpers = new BaseHelpers<List<OperationTypeForListDto>>();
+        public GetAllOperationsTypeQueryHandler(IOperationTypeRepository operationTypeRepository) => (_operationTypeRepository) = (operationTypeRepository);
         public async Task<ResponseBaseDto> Handle(GetAllOperationTypes request, CancellationToken cancellationToken)
         {
             var operationTypeList = new List<OperationTypeForListDto>();

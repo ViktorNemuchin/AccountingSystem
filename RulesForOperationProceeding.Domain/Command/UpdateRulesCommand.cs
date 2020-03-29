@@ -7,7 +7,7 @@ namespace RulesForOperationProceeding.Domain.Command
 {
     public class UpdateRulesCommand: BaseCommand<ResponseBaseDto>
     {
-        public List<RulesForUpdateDto> RulesForUpdate { get; private set; }
-        public UpdateRulesCommand(List<RulesForUpdateDto> rulesForUpdate) => (RulesForUpdate) = (rulesForUpdate);
+        public List<RuleDto> RulesForUpdate { get; private set; }
+        public UpdateRulesCommand(List<RuleDto> rulesForUpdate) => (RulesForUpdate) = (rulesForUpdate);
     }
 }

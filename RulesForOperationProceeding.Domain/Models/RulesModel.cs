@@ -16,5 +16,8 @@ namespace RulesForOperationProceeding.Domain.Models
         public RulesModel(Guid id, string sourceAccount, string destinationAccount, string formula, string description,DateTimeOffset dateFrom, Guid operationTypeId) =>
             (Id, SourceAccount, DestinationAccount, Formula, Description,DateFrom, OperationTypeId) = 
             (id, sourceAccount, destinationAccount, formula, description, dateFrom, operationTypeId);
+        public RulesModel(string sourceAccount, string destinationAccount, string formula, string description, DateTimeOffset dateFrom, Guid operationTypeId) =>
+            (SourceAccount, DestinationAccount, Formula, Description, DateFrom, OperationTypeId) =
+            (sourceAccount, destinationAccount, formula, description, dateFrom, operationTypeId);
     }
 }

@@ -15,6 +15,7 @@ namespace RulesForOperationProceeding.Data.RulesForOperationProceedingDbContext
 
         public DbSet<OperationTypeModel> OperationTypes { get; set; }
         public DbSet<RulesModel> Rules { get; set; }
+        public DbSet<OperationParameterModel> OperationParameters { get; set; }
 
     }
 }

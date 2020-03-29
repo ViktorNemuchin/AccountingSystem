@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RulesForOperationProceeding.Data.IRepositories
 {
-    public interface  IRuleRepository
+    public interface  IRuleRepository: IBaseRepository
     {
         public Task AddRule(RulesModel rule);
         public Task AddRules(List<RulesModel> rules); 

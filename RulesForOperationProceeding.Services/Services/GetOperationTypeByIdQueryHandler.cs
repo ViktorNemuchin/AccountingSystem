@@ -23,11 +23,15 @@ namespace RulesForOperationProceeding.Services.Services
 
             var operation = await _operationTypeRepository.GetOperationTypeById(request.OperationId);
             var rulesList = await _mediator.Send(new GetRulesForOperationTypeQueryByOperationId(request.OperationId));
+            var parameterList = await _mediator.Send(new GetParametersForOperationTypeQueryByOperationTypeIdQuery(request.OperationId));
             if (operation == null)
                 return _baseHelper.FormMessageResponse("Error", "Нет такого типа операции");
             if (rulesList == null || rulesList.Count == 0)
-                return _baseHelper.FormMessageResponse("Error", "Нет доступных операций");
-            return _baseHelper.FormOkResponse(_baseHelper.ConvertOperationTypeModelToDTO(rulesList, operation));
+                return _baseHelper.FormMessageResponse("Error", "Нет доступных правил");
+            if (parameterList == null)
+                return _baseHelper.FormMessageResponse("Error", "Не заданны параметры для операции");
+
+            return _baseHelper.FormOkResponse(_baseHelper.ConvertOperationTypeModelToDTO(rulesList,parameterList, operation));
             
         }
     }
