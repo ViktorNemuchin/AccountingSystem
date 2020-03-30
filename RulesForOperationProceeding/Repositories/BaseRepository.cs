@@ -11,7 +11,7 @@ namespace RulesForOperationProceeding.Data.Repositories
 {
     public class BaseRepository: IBaseRepository
     {
-        private readonly RulesForOperationProceedingDataDbContext _context;
+        protected readonly RulesForOperationProceedingDataDbContext _context;
         public BaseRepository(RulesForOperationProceedingDataDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(); ;

@@ -8,7 +8,6 @@ namespace RulesForOperationProceeding.Data.IRepositories
     public interface IBaseRepository
     {
         public Task<int> SaveChangesAsync();
-        public void Dispose();
 
     }
 }

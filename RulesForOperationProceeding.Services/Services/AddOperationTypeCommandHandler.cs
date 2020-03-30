@@ -24,18 +24,21 @@ namespace RulesForOperationProceeding.Services.Services
             (_operationTypeRepository, _operationParameterRepository, _ruleRepository) = (operationTypeRepository, parameterRepositor, ruleRepository);
         public async Task<ResponseBaseDto> Handle(AddOperationTypeCommand request, CancellationToken cancellationToken)
         {
+            var operationType = new OperationTypeModel(request.TypeName, request.DueDate);
+            
+            await _operationTypeRepository.AddOperationType(operationType);
+            
             var rulesList = new List<RulesModel>();
             foreach(var entry in request.Rules) 
             {
-                rulesList.Add(_baseHelper.ConvertOperationRuleDtoToModel(entry, request.DueDate));
-
+                rulesList.Add(_baseHelper.ConvertOperationRuleDtoToModel(entry,operationType.Id, request.DueDate));
             }
 
             var parameterList = new List<OperationParameterModel>();
 
             foreach(var entry in request.Parameters) 
             {
-                parameterList.Add(_baseHelper.ConverParameterDtoToModel(entry));
+                parameterList.Add(_baseHelper.ConverParameterDtoToModel(entry, operationType.Id));
             }
 
             if (rulesList.Count == 0)
@@ -45,15 +48,12 @@ namespace RulesForOperationProceeding.Services.Services
             
             await _ruleRepository.AddRules(rulesList);
             
-            await _operationParameterRepository.AddOperationParameters(parameterList);
-
-            var operationType = new OperationTypeModel(request.TypeName,request.DueDate);
-
-            await _operationTypeRepository.AddOperationType(operationType);
+            await _operationParameterRepository.AddOperationParameters(parameterList);           
 
             await _operationTypeRepository.SaveChangesAsync();
             var result = new OperationTypeForListDto
             {
+                OperationtypeId =operationType.Id,
                 OperationTypeName = request.TypeName
             };
 

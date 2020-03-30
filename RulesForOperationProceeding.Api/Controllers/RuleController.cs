@@ -11,33 +11,90 @@ using RulesForOperationProceeding.Domain.Command;
 
 namespace RulesForOperationProceeding.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/operation-types")]
     [ApiController]
     public class RuleController : ControllerBase
     {
         private readonly IMediator _mediator;
         public RuleController(IMediator mediator) => (_mediator) = (mediator);
         #region HttpGet
-        [HttpGet("{ruleId}")]
+        /// <summary>
+        /// Получение правила учета операции по  идентификатору правила учета операции
+        /// </summary>
+        /// <param name="ruleId">Id правила</param>
+        /// <response code="200">Возвращает правило учета операции</response>
+        /// <response code="400">Возвращает ошибку данных при неправильном вводе Id правила вида операции</response>
+        /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+        /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        [HttpGet("{operationTypeId}/Rules/{ruleId}")]
+        [ProducesResponseType(typeof(ResponseOkDto<RuleDto>), 200)]
+        [ProducesResponseType(typeof(ResponseMessageDto), 400)]
+        [ProducesResponseType(typeof(ResponseMessageDto), 404)]
+        [ProducesResponseType(typeof(ResponseMessageDto), 500)]
+
         public async Task<IActionResult> GetRuleByRuleId(Guid ruleId)
             => Ok(await _mediator.Send(new GetRuleByRuleIdQuery(ruleId)));
-
-        [HttpGet("all/{operationId}")]
-        public async Task<IActionResult> GetRulesByOperationId(Guid operationId)
-            => Ok(await _mediator.Send(new GetRulesByOperationTypeIdQuery(operationId)));
+        /// <summary>
+        /// Получение списка правил операции для определенного типа операций 
+        /// </summary>
+        /// <param name="operationTypeId">Id типа операции</param>
+        /// <response code="200">Возвращает список правил видов учета операции</response>
+        /// <response code="400">Возвращает ошибку данных при неправильном вводе Id вида операции</response>
+        /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+        /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        [HttpGet("{operationTypeId}/Rules")]
+        [ProducesResponseType(typeof(ResponseOkDto<List<RuleDto>>), 200)]
+        [ProducesResponseType(typeof(ResponseMessageDto), 400)]
+        [ProducesResponseType(typeof(ResponseMessageDto), 404)]
+        [ProducesResponseType(typeof(ResponseMessageDto), 500)]
+        public async Task<IActionResult> GetRulesByOperationId(Guid operationTypeId)
+            => Ok(await _mediator.Send(new GetRulesByOperationTypeIdQuery(operationTypeId)));
         #endregion
+
         #region HttpPost
-        [HttpPost("{operationTypeId}/add")]
+        /// <summary>
+        /// Добавления правила к указанному типу операции
+        /// </summary>
+        /// <param name="operationTypeId">Id типа операции</param>
+        /// <param name="rule">Правило для добавления</param>
+        /// <response code="200">Возвращает статус Ok, id и название правила операции</response>
+        /// <response code="400">Возвращает ошибку данных при неправильном вводе Id вида операции</response>
+        /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+        /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        [HttpPost("{operationTypeId}/Rules")]
+        [ProducesResponseType(typeof(ResponseOkDto<TraansferResultDto>), 200)]
+        [ProducesResponseType(typeof(ResponseMessageDto), 400)]
+        [ProducesResponseType(typeof(ResponseMessageDto), 404)]
+        [ProducesResponseType(typeof(ResponseMessageDto), 500)]
+
         public async Task<IActionResult> AddRuleToOperationType(Guid operationTypeId, TransferRuleDto rule)
             => Ok(await _mediator.Send(new AddRuleToOperationTypeIdCommand(rule.SourceAccount, rule.DestinationAccount, rule.Formula, rule.Description, rule.DateFrom, operationTypeId)));
         #endregion
         #region HttpPut
-        [HttpPut("{operationTypeId}/update/{ruleId}")]
+        /// <summary>
+        /// Изменение правила для типа учета операции
+        /// </summary>
+        /// <param name="operationTypeId">Id типа операции</param>
+        /// <param name="ruleId">Id  правила</param>
+        /// <param name="rule">Данные для изменения правил</param>
+        /// <response code="200">Возвращает статус Ok, id и название правила операции</response>
+        /// <response code="400">Возвращает ошибку данных при неправильном вводе Id правила и вида операции</response>
+        /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+        /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        [HttpPut("{operationTypeId}/Rules/{ruleId}")]
         public async Task<IActionResult> UpdateRule(Guid operationTypeId, Guid ruleId, TransferRuleDto rule)
             => Ok(await _mediator.Send(new UpdateRuleCommand(ruleId, rule.SourceAccount, rule.DestinationAccount, rule.Formula, rule.Description, rule.DateFrom, operationTypeId)));
         #endregion
         #region HttpDelete
-        [HttpDelete("{ruleId}/delete")]
+        /// <summary>
+        /// Удаление правила операции по указанном идентификатору правила операции
+        /// </summary>
+        /// <param name="ruleId">Идентификатор правила операции</param>
+        /// <response code="200">Возвращает статус Ok, id и название правила операции</response>
+        /// <response code="400">Возвращает ошибку данных при неправильном вводе Id правила операции</response>
+        /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+        /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        [HttpDelete("{operationTypeId}/Rules/{ruleId}")]
         public async Task<IActionResult> DeleteRule(Guid ruleId)
             => Ok(await _mediator.Send(new DeleteRuleCommand(ruleId)));
         #endregion

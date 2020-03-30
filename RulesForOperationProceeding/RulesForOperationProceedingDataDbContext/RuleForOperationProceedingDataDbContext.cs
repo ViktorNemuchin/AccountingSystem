@@ -17,5 +17,34 @@ namespace RulesForOperationProceeding.Data.RulesForOperationProceedingDbContext
         public DbSet<RulesModel> Rules { get; set; }
         public DbSet<OperationParameterModel> OperationParameters { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<OperationTypeModel>()
+                .HasKey(id => id.Id);
+
+            modelBuilder
+                .Entity<OperationTypeModel>()
+                .Property(id => id.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<RulesModel>()
+                .HasKey(id => id.Id);
+
+            modelBuilder
+                .Entity<RulesModel>()
+                .Property(id => id.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<OperationParameterModel>()
+                .HasKey(id => id.Id);
+
+            modelBuilder
+                .Entity<OperationParameterModel>()
+                .Property(id => id.Id)
+                .ValueGeneratedOnAdd();
+        }
     }
 }

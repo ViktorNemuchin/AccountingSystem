@@ -15,6 +15,8 @@ namespace RulesForOperationProceeding.Services.Services
     {
         private readonly IRuleRepository _ruleRepository;
         private readonly BaseHelpers<List<RuleDto>> _baseHelpers = new BaseHelpers<List<RuleDto>>();
+        public GetRulesByTypeIdQueryHandler(IRuleRepository ruleRepository) =>
+            (_ruleRepository) = (ruleRepository);
         public async Task<ResponseBaseDto> Handle(GetRulesByOperationTypeIdQuery request, CancellationToken cancellationToken)
         {
             var ruleList = new List<RuleDto>();

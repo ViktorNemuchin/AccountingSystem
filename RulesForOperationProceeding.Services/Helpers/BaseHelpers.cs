@@ -32,7 +32,7 @@ namespace RulesForOperationProceeding.Services.Helpers
         };
         public RuleDto ConvertRuleModelToDTO(RulesModel ruleToConvert) => new RuleDto
         {
-
+            RuleId = ruleToConvert.Id,
             SourceAccount = ruleToConvert.SourceAccount,
             DestinationAccount = ruleToConvert.DestinationAccount,
             Description = ruleToConvert.Description,
@@ -50,16 +50,19 @@ namespace RulesForOperationProceeding.Services.Helpers
         {
             OperationParameter = operationParameter.OperationParameterValue,
             OperationParameterName = operationParameter.OperationParameterName,
-            OperationId = operationParameter.OperationTypeId,
+            OperationTypeId = operationParameter.OperationTypeId,
             OperationParameterId = operationParameter.Id
         };
         public RulesModel ConvertOperationRuleDtoToModel(RuleDto rule) => 
             new RulesModel(rule.SourceAccount, rule.DestinationAccount, rule.Formula, rule.Description, rule.DateFrom, rule.OperationTypeId);
-
         public RulesModel ConvertOperationRuleDtoToModel(RuleDto rule, DateTimeOffset dateFrom) =>
             new RulesModel(rule.SourceAccount, rule.DestinationAccount, rule.Formula, rule.Description, dateFrom, rule.OperationTypeId);
+        public RulesModel ConvertOperationRuleDtoToModel(TransferRuleDto rule,Guid operationTypeId ,  DateTimeOffset dateFrom) =>
+            new RulesModel(rule.SourceAccount, rule.DestinationAccount, rule.Formula, rule.Description, dateFrom, operationTypeId);
 
         public OperationParameterModel ConverParameterDtoToModel(OperationParameterDto operationParameter) => 
-            new OperationParameterModel(operationParameter.OperationParameterName, operationParameter.OperationParameter, operationParameter.OperationParameterId); 
+            new OperationParameterModel(operationParameter.OperationParameterName, operationParameter.OperationParameter, operationParameter.OperationParameterId);
+        public OperationParameterModel ConverParameterDtoToModel(OperationParameterTransferDto operationParameter, Guid operationTypeId ) =>
+            new OperationParameterModel(operationParameter.OperationParameterName, operationParameter.OperationParameterValue, operationTypeId);
     }
 }

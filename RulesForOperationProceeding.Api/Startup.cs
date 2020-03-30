@@ -37,7 +37,7 @@ namespace RulesForOperationProceeding.Api
             {
 
                 options.UseNpgsql(Configuration.GetConnectionString("Pstgr"),
-                    npsqlOptions => npsqlOptions.MigrationsAssembly("AccountsTestP.Api"));
+                    npsqlOptions => npsqlOptions.MigrationsAssembly("RulesForOperationProceeding.Api"));
                 options.EnableSensitiveDataLogging();
             });
             services.AddScoped <IOperationTypeRepository, OperationTypeRepository>();
@@ -49,9 +49,9 @@ namespace RulesForOperationProceeding.Api
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "—ервис правил дл€ формировани€ проводок", Version = "v1" });
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //c.IncludeXmlComments(xmlPath);
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -62,11 +62,11 @@ namespace RulesForOperationProceeding.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-            //using (var serviceScope = app.ApplicationServices.CreateScope())
-            //{
-            //    var context = serviceScope.ServiceProvider.GetService<RulesForOperationProceedingDataDbContext>();
-            //    context.Database.Migrate();
-            //}
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<RulesForOperationProceedingDataDbContext>();
+                context.Database.Migrate();
+            }
 
             app.UseRouting();
 
