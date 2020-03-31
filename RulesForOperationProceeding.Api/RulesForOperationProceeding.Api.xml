@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RulesForOperationProceeding.Api</name>
+    </assembly>
+    <members>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.OperationParameterController.GetOperationParameterByOperationTypeId(System.Guid)">
+            <summary>
+            Получение всех параметров для типа операции по Id типа операции
+            </summary>
+            <param name="operationTypeId"> Id типа операции</param>
+            <response code="200">Возвращает список правил</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе Id типа опреации</response>
+            <response code="404">Не найдены параметры по Id типа операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.OperationParameterController.AddParameterToOperationType(System.Guid,RulesForOperationProceeding.Domain.DTOS.OperationParameterTransferDto)">
+            <summary>
+            Добавление параметра к списку параметров для типа операции
+            </summary>
+            <param name="operationTypeId">Id типа операции</param>
+            <param name="operationParameter">Параметр операции для добавления</param>
+            <response code="200">Возвращает статус OK, Id и название параметра</response>
+            <response code="400">Тип предоставленных данных не совподает с Guid</response>
+            <response code="404">Нет доступных данных</response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.OperationParameterController.UpdateOperationParameter(System.Guid,System.Guid,RulesForOperationProceeding.Domain.DTOS.OperationParameterTransferDto)">
+            <summary>
+            Изменение данных параметра типа операции по Id параметра операции
+            </summary>
+            <param name="operationTypeId">Id типа операции</param>
+            <param name="operationParameterId">Id параметра операции</param>
+            <param name="operationParameter">Данные для измененияя прарметра операции</param>
+            <response code="200">Возвращает статус OK, Id и название параметра</response>
+            <response code="400">Тип предоставленных данных не совподает с тркебуемым</response>
+            <response code="404">Нет доступных данных</response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.OperationParameterController.DeleteOperationParameter(System.Guid)">
+            <summary>
+            Удаление параметра операции по Id параметра операции
+            </summary>
+            <param name="operationParameterId">Id параметра операции</param>
+            <response code="200">Возвращает статус OK, Id и название параметра</response>
+            <response code="400">Тип предоставленных данных не совподает с тркебуемым</response>
+            <response code="404">Нет доступных данных</response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.OperationTypeController.GetAllOperationTypes">
+            <summary>
+            Получение списка видов учета операций
+            </summary>
+            <response code="200">Возвращает список видов учета операции</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе Id вида операции</response>
+            <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.OperationTypeController.GetOperationTypeById(System.Guid)">
+            <summary>
+            Запрос вида операции по Id вида учета операции 
+            </summary>
+            <param name="operationTypeId">Id вида операции</param>
+            <response code="200">Возвращает вида операции</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе Id вида операции</response>
+            <response code="404">Введены неправильные данные для поиска типа учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.OperationTypeController.GetOperationTypeByOperationName(System.String)">
+            <summary>
+            Запрос вида операции по названию вида операции
+            </summary>
+            <param name="operationTypeName">Название вида операции</param>
+            <response code="200">Возвращает вида операции</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе данных названия вида операции</response>
+            <response code="404">Введены неправильные данные для поиска типа учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.OperationTypeController.CreateNewOperationType(RulesForOperationProceeding.Domain.DTOS.CreateOpertionTypeTransferDto)">
+            <summary>
+            Добавление вида операции
+            </summary>
+            <param name="operationType">Вид операции для добавления</param>
+            <response code="200">Возвращает статус Ok при добавлении</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе данных о виде операции</response>
+            <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.OperationTypeController.UpdateOPerationType(System.Guid,RulesForOperationProceeding.Domain.DTOS.CreateOpertionTypeTransferDto)">
+            <summary>
+            Изменение вида учета_операции имеющий указанный идентификатор операции в сооответсвии с новыми данными указанными в теле запроса
+            </summary>
+            <param name="operationTypeId">Id операции</param>
+            <param name="operationType">Новые данные вида учета опервции</param>
+            <response code="200">Возвращает статус Ok при успешном обновлении</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе данных о виде операции</response>
+            <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.OperationTypeController.DeleteOperationType(System.Guid)">
+            <summary>
+            Удаление вида операции
+            </summary>
+            <param name="operationTypeId">Id вида операции для удаления </param>
+            <response code="200">Возвращает статус Ok при удалении</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе id операции </response>
+            <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>        
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.RuleController.GetRuleByRuleId(System.Guid)">
+            <summary>
+            Получение правила учета операции по  идентификатору правила учета операции
+            </summary>
+            <param name="ruleId">Id правила</param>
+            <response code="200">Возвращает правило учета операции</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе Id правила вида операции</response>
+            <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.RuleController.GetRulesByOperationId(System.Guid)">
+            <summary>
+            Получение списка правил операции для определенного типа операций 
+            </summary>
+            <param name="operationId">Id операции</param>
+            <response code="200">Возвращает список правил видов учета операции</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе Id вида операции</response>
+            <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.RuleController.AddRuleToOperationType(System.Guid,RulesForOperationProceeding.Domain.DTOS.TransferRuleDto)">
+            <summary>
+            Добавления правила к указанному типу операции
+            </summary>
+            <param name="operationTypeId">Id типа операции</param>
+            <param name="rule">Правило для добавления</param>
+            <response code="200">Возвращает статус Ok, id и название правила операции</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе Id вида операции</response>
+            <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.RuleController.UpdateRule(System.Guid,System.Guid,RulesForOperationProceeding.Domain.DTOS.TransferRuleDto)">
+            <summary>
+            Изменение правила для типа учета операции
+            </summary>
+            <param name="operationTypeId">Id типа операции</param>
+            <param name="ruleId">Id  правила</param>
+            <param name="rule">Данные для изменения правил</param>
+            <response code="200">Возвращает статус Ok, id и название правила операции</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе Id правила и вида операции</response>
+            <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+        <member name="M:RulesForOperationProceeding.Api.Controllers.RuleController.DeleteRule(System.Guid)">
+            <summary>
+            Удаление правила операции по указанном идентификатору правила операции
+            </summary>
+            <param name="ruleId">Идентификатор правила операции</param>
+            <response code="200">Возвращает статус Ok, id и название правила операции</response>
+            <response code="400">Возвращает ошибку данных при неправильном вводе Id правила операции</response>
+            <response code="404">Введены неправильные данные для поиска вида учета операции </response>
+            <response code ="500">Возвращает сообщение о внутренней ошибке</response>
+        </member>
+    </members>
+</doc>
