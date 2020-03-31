@@ -16,7 +16,7 @@ namespace RulesForOperationProceeding.Services.Services
     public class DeleteOperationParameterCommandHandler : IRequestHandler<DeleteOperationParameterCommand, ResponseBaseDto>
     {
         private readonly IOperationParameterRepositor _operationParameterRepository;
-        private readonly BaseHelpers<TraansferResultDto> _baseHelper = new BaseHelpers<TraansferResultDto>();
+        private readonly BaseHelpers<TransferResultDto> _baseHelper = new BaseHelpers<TransferResultDto>();
         public DeleteOperationParameterCommandHandler(IOperationParameterRepositor operationParameterRepository) => (_operationParameterRepository) = (operationParameterRepository);
         public async Task<ResponseBaseDto> Handle(DeleteOperationParameterCommand request, CancellationToken cancellationToken)
         {
@@ -25,7 +25,7 @@ namespace RulesForOperationProceeding.Services.Services
                 return _baseHelper.FormMessageResponse("Error", "Данное правило не найдено");
             _operationParameterRepository.DeleteOperationParameter(operationParameter);
             await _operationParameterRepository.SaveChangesAsync();
-            var result = new TraansferResultDto() { Id = operationParameter.Id, Name = operationParameter.OperationParameterName };
+            var result = new TransferResultDto() { Id = operationParameter.Id, Name = operationParameter.OperationParameterName };
             return _baseHelper.FormOkResponse(result);
         }
     }

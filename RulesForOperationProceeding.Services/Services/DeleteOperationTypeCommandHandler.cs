@@ -19,7 +19,7 @@ namespace RulesForOperationProceeding.Services.Services
         private readonly IOperationTypeRepository _operationTypeRepository;
         private readonly IOperationParameterRepositor _operationParameterRepository;
         private readonly IRuleRepository _ruleRepository;
-        private readonly BaseHelpers<OperationTypeForListDto> _baseHelper = new BaseHelpers<OperationTypeForListDto>();
+        private readonly BaseHelpers<TransferResultDto> _baseHelper = new BaseHelpers<TransferResultDto>();
 
 
         public DeleteOperationTypeCommandHandler(IOperationTypeRepository operationTypeRepository, IOperationParameterRepositor operationParameterRepository, IRuleRepository ruleRepository) =>
@@ -41,7 +41,7 @@ namespace RulesForOperationProceeding.Services.Services
 
             await _operationTypeRepository.SaveChangesAsync();
 
-            var result = new OperationTypeForListDto() { OperationTypeName = operationType.OperationTypeName};
+            var result = new TransferResultDto() { Id = operationType.Id, Name = operationType.OperationTypeName};
 
             return _baseHelper.FormOkResponse(result);
         }

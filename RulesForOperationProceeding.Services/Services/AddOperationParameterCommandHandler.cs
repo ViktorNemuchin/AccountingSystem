@@ -17,7 +17,7 @@ namespace RulesForOperationProceeding.Services.Services
     {
         private readonly IOperationTypeRepository _operationTypeRepostiry;
         private readonly IOperationParameterRepositor _operationParameterRepository;
-        private readonly BaseHelpers<TraansferResultDto> _baseHelper = new BaseHelpers<TraansferResultDto>();
+        private readonly BaseHelpers<TransferResultDto> _baseHelper = new BaseHelpers<TransferResultDto>();
 
         public AddOperationParameterCommandHandler(IOperationTypeRepository operationTypeRepository, IOperationParameterRepositor operationParameterRepository) =>
             (_operationParameterRepository, _operationTypeRepostiry) = (operationParameterRepository, operationTypeRepository);
@@ -30,7 +30,7 @@ namespace RulesForOperationProceeding.Services.Services
             var operationParameter = new OperationParameterModel(request.OperationParameterName, request.OperationParameterValue, request.OperationTypeId);
             await _operationParameterRepository.AddOperationParameter(operationParameter);
             await _operationParameterRepository.SaveChangesAsync();
-            var result = new TraansferResultDto()
+            var result = new TransferResultDto()
             {
                 Id = operationParameter.Id,
                 Name = operationParameter.OperationParameterName

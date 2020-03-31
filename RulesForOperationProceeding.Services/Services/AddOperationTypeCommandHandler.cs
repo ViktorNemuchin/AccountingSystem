@@ -24,14 +24,14 @@ namespace RulesForOperationProceeding.Services.Services
             (_operationTypeRepository, _operationParameterRepository, _ruleRepository) = (operationTypeRepository, parameterRepositor, ruleRepository);
         public async Task<ResponseBaseDto> Handle(AddOperationTypeCommand request, CancellationToken cancellationToken)
         {
-            var operationType = new OperationTypeModel(request.TypeName, request.DueDate);
+            var operationType = new OperationTypeModel(request.TypeName);
             
             await _operationTypeRepository.AddOperationType(operationType);
             
             var rulesList = new List<RulesModel>();
             foreach(var entry in request.Rules) 
             {
-                rulesList.Add(_baseHelper.ConvertOperationRuleDtoToModel(entry,operationType.Id, request.DueDate));
+                rulesList.Add(_baseHelper.ConvertOperationRuleDtoToModel(entry,operationType.Id, request.DateFrom));
             }
 
             var parameterList = new List<OperationParameterModel>();

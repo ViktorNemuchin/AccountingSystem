@@ -11,7 +11,7 @@ using RulesForOperationProceeding.Domain.Command;
 
 namespace RulesForOperationProceeding.Api.Controllers
 {
-    [Route("api/operation-types")]
+    [Route("api/accounting-system/operation-types")]
     [ApiController]
     public class RuleController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="400">Возвращает ошибку данных при неправильном вводе Id правила вида операции</response>
         /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
-        [HttpGet("{operationTypeId}/Rules/{ruleId}")]
+        [HttpGet("{operationTypeId}/rules/{ruleId}")]
         [ProducesResponseType(typeof(ResponseOkDto<RuleDto>), 200)]
         [ProducesResponseType(typeof(ResponseMessageDto), 400)]
         [ProducesResponseType(typeof(ResponseMessageDto), 404)]
@@ -42,7 +42,7 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="400">Возвращает ошибку данных при неправильном вводе Id вида операции</response>
         /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
-        [HttpGet("{operationTypeId}/Rules")]
+        [HttpGet("{operationTypeId}/rules")]
         [ProducesResponseType(typeof(ResponseOkDto<List<RuleDto>>), 200)]
         [ProducesResponseType(typeof(ResponseMessageDto), 400)]
         [ProducesResponseType(typeof(ResponseMessageDto), 404)]
@@ -61,14 +61,14 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="400">Возвращает ошибку данных при неправильном вводе Id вида операции</response>
         /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
-        [HttpPost("{operationTypeId}/Rules")]
-        [ProducesResponseType(typeof(ResponseOkDto<TraansferResultDto>), 200)]
+        [HttpPost("{operationTypeId}/rules")]
+        [ProducesResponseType(typeof(ResponseOkDto<TransferResultDto>), 200)]
         [ProducesResponseType(typeof(ResponseMessageDto), 400)]
         [ProducesResponseType(typeof(ResponseMessageDto), 404)]
         [ProducesResponseType(typeof(ResponseMessageDto), 500)]
 
-        public async Task<IActionResult> AddRuleToOperationType(Guid operationTypeId, TransferRuleDto rule)
-            => Ok(await _mediator.Send(new AddRuleToOperationTypeIdCommand(rule.SourceAccount, rule.DestinationAccount, rule.Formula, rule.Description, rule.DateFrom, operationTypeId)));
+        public async Task<IActionResult> AddRuleToOperationType(Guid operationTypeId, TransferRuleForRuleControllerDto rule)
+            => Ok(await _mediator.Send(new AddRuleToOperationTypeIdCommand(rule.SourceAccount, rule.DestinationAccount,rule.RuleOrderNumber, rule.Formula, rule.Description,rule.DateFrom, operationTypeId)));
         #endregion
         #region HttpPut
         /// <summary>
@@ -81,9 +81,9 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="400">Возвращает ошибку данных при неправильном вводе Id правила и вида операции</response>
         /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
-        [HttpPut("{operationTypeId}/Rules/{ruleId}")]
-        public async Task<IActionResult> UpdateRule(Guid operationTypeId, Guid ruleId, TransferRuleDto rule)
-            => Ok(await _mediator.Send(new UpdateRuleCommand(ruleId, rule.SourceAccount, rule.DestinationAccount, rule.Formula, rule.Description, rule.DateFrom, operationTypeId)));
+        [HttpPut("{operationTypeId}/rules/{ruleId}")]
+        public async Task<IActionResult> UpdateRule(Guid operationTypeId, Guid ruleId, TransferRuleForRuleControllerDto rule)
+            => Ok(await _mediator.Send(new UpdateRuleCommand(ruleId, rule.SourceAccount, rule.DestinationAccount,rule.RuleOrderNumber, rule.Formula, rule.Description,rule.DateFrom, operationTypeId)));
         #endregion
         #region HttpDelete
         /// <summary>
@@ -94,7 +94,7 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="400">Возвращает ошибку данных при неправильном вводе Id правила операции</response>
         /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
-        [HttpDelete("{operationTypeId}/Rules/{ruleId}")]
+        [HttpDelete("{operationTypeId}/rules/{ruleId}")]
         public async Task<IActionResult> DeleteRule(Guid ruleId)
             => Ok(await _mediator.Send(new DeleteRuleCommand(ruleId)));
         #endregion

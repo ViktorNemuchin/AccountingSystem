@@ -4,12 +4,10 @@ using System.Text;
 
 namespace RulesForOperationProceeding.Domain.DTOS
 {
-    public class UpdateOpertionTypeTransferDto
+    public class UpdateOperationTypeTransferDto
     {
         public string OperationTypeName { get; set; }
-        public List<OperationParameterDto> Parametters { get; set; }
-        public List<RuleDto> Rules { get; set; }
-        public DateTimeOffset DateFrom { get; set; }
-        public DateTimeOffset DueDate { get; set; }
+        public List<TransferOperationParameterForUpdateDto> OperationParameters { get; set; }
+        public List<TransferRuleForUpdateDto> Rules { get; set; }
     }
 }

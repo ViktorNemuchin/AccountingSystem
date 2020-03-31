@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RulesForOperationProceeding.Data.RulesForOperationProceedingDbContext;
@@ -9,9 +10,10 @@ using RulesForOperationProceeding.Data.RulesForOperationProceedingDbContext;
 namespace RulesForOperationProceeding.Api.Migrations
 {
     [DbContext(typeof(RulesForOperationProceedingDataDbContext))]
-    partial class RulesForOperationProceedingDataDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200331182805_RuleOrderNumber")]
+    partial class RuleOrderNumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

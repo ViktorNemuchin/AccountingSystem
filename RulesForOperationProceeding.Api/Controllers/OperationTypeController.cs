@@ -11,7 +11,7 @@ using RulesForOperationProceeding.Domain.Command;
 
 namespace RulesForOperationProceeding.Api.Controllers
 {
-    [Route("api/operation-types")]
+    [Route("api/accounting-system/operation-types")]
     [ApiController]
     public class OperationTypeController : ControllerBase
     {
@@ -43,7 +43,7 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="400">Возвращает ошибку данных при неправильном вводе Id вида операции</response>
         /// <response code="404">Введены неправильные данные для поиска типа учета операции </response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
-        [HttpGet("id/{operationTypeId}")]
+        [HttpGet("{operationTypeId}")]
         [ProducesResponseType(typeof(ResponseOkDto<OperationTypeDto>), 200)]
         [ProducesResponseType(typeof(ResponseMessageDto), 400)]
         [ProducesResponseType(typeof(ResponseMessageDto), 404)]
@@ -79,16 +79,16 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
         [HttpPost("")]
-        [ProducesResponseType(typeof(ResponseOkDto<TraansferResultDto>), 200)]
+        [ProducesResponseType(typeof(ResponseOkDto<TransferResultDto>), 200)]
         [ProducesResponseType(typeof(ResponseMessageDto), 400)]
         [ProducesResponseType(typeof(ResponseMessageDto), 404)]
         [ProducesResponseType(typeof(ResponseMessageDto), 500)]
-        public async Task<IActionResult> CreateNewOperationType(CreateOperationTypeTransferDto operationType) 
-            => Ok(await _mediator.Send(new AddOperationTypeCommand(operationType.OperationTypeName, 
+        public async Task<IActionResult> CreateNewOperationType(OperationTypeTransferDto operationType) 
+            => Ok(await _mediator.Send(new AddOperationTypeCommand(
+                operationType.OperationTypeName, 
                 operationType.Rules, 
-                operationType.Parametters, 
-                operationType.DateFrom, 
-                operationType.DueDate)));
+                operationType.OperationParameters, 
+                operationType.DateFrom)));
         #endregion
 
         #region HttpPut
@@ -102,16 +102,15 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="404">Введены неправильные данные для поиска вида учета операции </response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
         [HttpPut("{operationTypeId}")]
-        [ProducesResponseType(typeof(ResponseOkDto<TraansferResultDto>), 200)]
+        [ProducesResponseType(typeof(ResponseOkDto<TransferResultDto>), 200)]
         [ProducesResponseType(typeof(ResponseMessageDto), 400)]
         [ProducesResponseType(typeof(ResponseMessageDto), 404)]
         [ProducesResponseType(typeof(ResponseMessageDto), 500)]
-        public async Task<IActionResult> UpdateOPerationType(Guid operationTypeId, UpdateOpertionTypeTransferDto operationType)
-            => Ok(await _mediator.Send(new UpdateOperationTypeCommand(operationTypeId, 
+        public async Task<IActionResult> UpdateOperationType(Guid operationTypeId, UpdateOperationTypeTransferDto operationType)
+            => Ok(await _mediator.Send(new UpdateOperationTypeCommand(
+                operationTypeId, 
                 operationType.OperationTypeName,
-                operationType.DateFrom,
-                operationType.DueDate, 
-                operationType.Parametters,
+                operationType.OperationParameters,
                 operationType.Rules)));
         #endregion
 
@@ -126,7 +125,7 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>        
         
         [HttpDelete("{operationTypeId}")]
-        [ProducesResponseType(typeof(ResponseOkDto<TraansferResultDto>), 200)]
+        [ProducesResponseType(typeof(ResponseOkDto<TransferResultDto>), 200)]
         [ProducesResponseType(typeof(ResponseMessageDto), 400)]
         [ProducesResponseType(typeof(ResponseMessageDto), 404)]
         [ProducesResponseType(typeof(ResponseMessageDto), 500)]

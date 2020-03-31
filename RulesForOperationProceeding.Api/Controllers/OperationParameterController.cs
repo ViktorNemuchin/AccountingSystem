@@ -11,7 +11,7 @@ using RulesForOperationProceeding.Domain.Command;
 
 namespace RulesForOperationProceeding.Api.Controllers
 {
-    [Route("api/operation-types/")]
+    [Route("api/accounting-system/operation-types/")]
     [ApiController]
     public class OperationParameterController : ControllerBase
     {
@@ -46,12 +46,12 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="400">Тип предоставленных данных не совподает с Guid</response>
         /// <response code="404">Нет доступных данных</response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
-        [HttpPost("{operationTypeId}/operation-parameter")]
-        [ProducesResponseType(typeof(ResponseOkDto<TraansferResultDto>), 200)]
+        [HttpPost("{operationTypeId}/operation-parameters")]
+        [ProducesResponseType(typeof(ResponseOkDto<TransferResultDto>), 200)]
         [ProducesResponseType(typeof(ResponseMessageDto), 400)]
         [ProducesResponseType(typeof(ResponseMessageDto), 404)]
         [ProducesResponseType(typeof(ResponseMessageDto), 500)]
-        public async Task<IActionResult> AddParameterToOperationType(Guid operationTypeId, OperationParameterTransferDto operationParameter)
+        public async Task<IActionResult> AddParameterToOperationType(Guid operationTypeId, TransferOperationParameterDto operationParameter)
              => Ok(await _mediator.Send(new AddOperationParameterCommand(operationParameter.OperationParameterName, operationParameter.OperationParameterValue, operationTypeId)));
         #endregion
         #region HttpPut
@@ -66,12 +66,12 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="404">Нет доступных данных</response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
        
-        [HttpPut("{operationTypeId}/operation-parameter/{operationParameterId}")]
-        [ProducesResponseType(typeof(ResponseOkDto<TraansferResultDto>), 200)]
+        [HttpPut("{operationTypeId}/operation-parameters/{operationParameterId}")]
+        [ProducesResponseType(typeof(ResponseOkDto<TransferResultDto>), 200)]
         [ProducesResponseType(typeof(ResponseMessageDto), 400)]
         [ProducesResponseType(typeof(ResponseMessageDto), 404)]
         [ProducesResponseType(typeof(ResponseMessageDto), 500)]
-        public async Task<IActionResult> UpdateOperationParameter(Guid operationTypeId,Guid operationParameterId, OperationParameterTransferDto operationParameter)
+        public async Task<IActionResult> UpdateOperationParameter(Guid operationTypeId,Guid operationParameterId, TransferOperationParameterDto operationParameter)
             => Ok(await _mediator.Send(new UpdateOperationParameterCommand(operationParameterId, operationParameter.OperationParameterName, operationParameter.OperationParameterValue, operationTypeId)));
         #endregion
         #region HttpDelete
@@ -83,8 +83,8 @@ namespace RulesForOperationProceeding.Api.Controllers
         /// <response code="400">Тип предоставленных данных не совподает с тркебуемым</response>
         /// <response code="404">Нет доступных данных</response>
         /// <response code ="500">Возвращает сообщение о внутренней ошибке</response>
-        [HttpDelete("{operationTypeId}/operation-parameter/{operationParameterId}")]
-        [ProducesResponseType(typeof(ResponseOkDto<TraansferResultDto>), 200)]
+        [HttpDelete("{operationTypeId}/operation-parameters/{operationParameterId}")]
+        [ProducesResponseType(typeof(ResponseOkDto<TransferResultDto>), 200)]
         [ProducesResponseType(typeof(ResponseMessageDto), 400)]
         [ProducesResponseType(typeof(ResponseMessageDto), 404)]
         [ProducesResponseType(typeof(ResponseMessageDto), 500)]

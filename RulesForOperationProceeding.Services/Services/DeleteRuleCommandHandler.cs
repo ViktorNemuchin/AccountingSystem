@@ -15,7 +15,7 @@ namespace RulesForOperationProceeding.Services.Services
     public class DeleteRuleCommandHandler : IRequestHandler<DeleteRuleCommand, ResponseBaseDto>
     {
         private readonly IRuleRepository _ruleRepository;
-        private readonly BaseHelpers<TraansferResultDto> _baseHelper = new BaseHelpers<TraansferResultDto>();
+        private readonly BaseHelpers<TransferResultDto> _baseHelper = new BaseHelpers<TransferResultDto>();
         public DeleteRuleCommandHandler(IRuleRepository ruleRepository) => (_ruleRepository) = (ruleRepository);
         public async Task<ResponseBaseDto> Handle(DeleteRuleCommand request, CancellationToken cancellationToken)
         {
@@ -24,7 +24,7 @@ namespace RulesForOperationProceeding.Services.Services
                 return _baseHelper.FormMessageResponse("Error", "Данное правило не найдено");
             _ruleRepository.DeleteRule(rule);
             await _ruleRepository.SaveChangesAsync();
-            var result = new TraansferResultDto() { Id = rule.Id, Name = rule.Description };
+            var result = new TransferResultDto() { Id = rule.Id, Name = rule.Description };
             return _baseHelper.FormOkResponse(result);
         }
     }

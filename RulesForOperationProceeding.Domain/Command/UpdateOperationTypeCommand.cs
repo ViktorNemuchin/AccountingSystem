@@ -9,13 +9,11 @@ namespace RulesForOperationProceeding.Domain.Command
     {
         public Guid OperationTypeId { get; private set; }
         public string OperationTypeName { get; private set; }
-        public DateTimeOffset DueDate { get; private set; }
-        public DateTimeOffset DateFrom { get; private set; }
-        public List<OperationParameterDto> OperationParameters { get; private set; }
-        public List<RuleDto> Rules { get; private set; }
+        public List<TransferOperationParameterForUpdateDto> OperationParameters { get; private set; }
+        public List<TransferRuleForUpdateDto> Rules { get; private set; }
 
-        public UpdateOperationTypeCommand(Guid operationTypeId, string operationTypeName, DateTimeOffset dateFrom, DateTimeOffset dueDate, List<OperationParameterDto> operationTypeParameters, List<RuleDto> rules) =>
-            (OperationTypeId, OperationTypeName, DateFrom, DueDate, OperationParameters, Rules) 
-            = (operationTypeId, operationTypeName,dateFrom,dueDate, operationTypeParameters, rules);
+        public UpdateOperationTypeCommand(Guid operationTypeId, string operationTypeName, List<TransferOperationParameterForUpdateDto> operationTypeParameters, List<TransferRuleForUpdateDto> rules) =>
+            (OperationTypeId, OperationTypeName, OperationParameters, Rules) 
+            = (operationTypeId, operationTypeName, operationTypeParameters, rules);
     }
 }

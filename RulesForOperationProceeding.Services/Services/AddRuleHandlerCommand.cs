@@ -17,7 +17,7 @@ namespace RulesForOperationProceeding.Services.Services
     {
         private IOperationTypeRepository _operationTypeRepostiry;
         private IRuleRepository _ruleRepository;
-        private BaseHelpers<TraansferResultDto> _baseHelper = new BaseHelpers<TraansferResultDto>();
+        private BaseHelpers<TransferResultDto> _baseHelper = new BaseHelpers<TransferResultDto>();
 
         public AddRuleCommandHandler(IOperationTypeRepository operationTypeRepository, IRuleRepository ruleRepository) => 
             (_operationTypeRepostiry, _ruleRepository) = (operationTypeRepository, ruleRepository);
@@ -27,11 +27,11 @@ namespace RulesForOperationProceeding.Services.Services
             if (operationType == null)
                 return _baseHelper.FormMessageResponse("Error", "Такой тип операции не найден");
 
-            var rule = new RulesModel(request.SourceAccount, request.DestinationAccount, request.Formula, request.Description, request.DateFrom, request.OperationId);
+            var rule = new RulesModel(request.SourceAccount, request.DestinationAccount,request.RuleOrderNumber, request.Formula, request.Description, request.DateFrom, request.OperationId);
             await _ruleRepository.AddRule(rule);
             await _ruleRepository.SaveChangesAsync();
 
-            var result = new TraansferResultDto() 
+            var result = new TransferResultDto() 
             { 
                 Id = rule.Id, 
                 Name = rule.Description 

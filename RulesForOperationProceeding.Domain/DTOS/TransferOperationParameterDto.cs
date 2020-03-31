@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RulesForOperationProceeding.Domain.DTOS
 {
-    public class OperationParameterTransferDto
+    public class TransferOperationParameterDto
     {
         public string OperationParameterName { get; set; }
         public string OperationParameterValue { get; set; }

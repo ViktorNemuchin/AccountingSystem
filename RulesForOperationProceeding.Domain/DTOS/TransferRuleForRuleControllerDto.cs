@@ -4,9 +4,8 @@ using System.Text;
 
 namespace RulesForOperationProceeding.Domain.DTOS
 {
-    public class TraansferResultDto
+    public class TransferRuleForRuleControllerDto:TransferRuleDto
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
+       public DateTimeOffset DateFrom { get; set; }
     }
 }

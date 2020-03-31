@@ -18,7 +18,7 @@ namespace RulesForOperationProceeding.Services.Services
         private readonly IOperationTypeRepository _operationTypeRepository;
         private readonly IOperationParameterRepositor _operationParameterRepository;
         private readonly IRuleRepository _ruleRepository;
-        private readonly BaseHelpers<OperationTypeForListDto> _baseHelper = new BaseHelpers<OperationTypeForListDto>();
+        private readonly BaseHelpers<TransferResultDto> _baseHelper = new BaseHelpers<TransferResultDto>();
         
         public UpdateOperationTypeCommandHandler(IOperationTypeRepository operationTypeRepository, IOperationParameterRepositor parameterRepositor, IRuleRepository ruleRepository) =>
             (_operationTypeRepository, _operationParameterRepository, _ruleRepository) = (operationTypeRepository, parameterRepositor, ruleRepository);
@@ -30,7 +30,7 @@ namespace RulesForOperationProceeding.Services.Services
             {
                 foreach (var entry in request.Rules)
                 {
-                    rulesList.Add(_baseHelper.ConvertOperationRuleDtoToModel(entry, request.DateFrom));
+                    rulesList.Add(_baseHelper.ConvertOperationRuleDtoToModel(entry, request.OperationTypeId));
                 }
                 _ruleRepository.UpdateRules(rulesList);
             }
@@ -40,18 +40,18 @@ namespace RulesForOperationProceeding.Services.Services
             {
                 foreach (var entry in request.OperationParameters)
                 {
-                    parameterList.Add(_baseHelper.ConverParameterDtoToModel(entry));
+                    parameterList.Add(_baseHelper.ConverParameterDtoToModel(entry, request.OperationTypeId));
                 }
                 _operationParameterRepository.UpdateOperationParameters(parameterList);
             }
-            var operationType = new OperationTypeModel(request.OperationTypeId, request.OperationTypeName,request.DueDate);
+            var operationType = new OperationTypeModel(request.OperationTypeId, request.OperationTypeName);
             _operationTypeRepository.UpdateOperationType(operationType);
             await _operationTypeRepository.SaveChangesAsync();
             
-            var result = new OperationTypeForListDto()
+            var result = new TransferResultDto()
             {
-                OperationtypeId = request.OperationTypeId,
-                OperationTypeName = request.OperationTypeName
+                Id = request.OperationTypeId,
+                Name = request.OperationTypeName
             };
             return _baseHelper.FormOkResponse(result);
         }

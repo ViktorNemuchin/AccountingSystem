@@ -8,7 +8,7 @@ namespace RulesForOperationProceeding.Domain.DTOS
     {
         public Guid OperationParameterId { get; set; }
         public string OperationParameterName { get; set; }
-        public string OperationParameter { get; set; }
+        public string OperationParameterValue { get; set; }
         public Guid OperationTypeId { get; set; }
 
     }
