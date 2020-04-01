@@ -1,0 +1,176 @@
+#before_script:
+#  - export CI_JOB_TIMESTAMP=$(date --utc --iso-8601=seconds)
+variables:
+  VERSION_POSTFIX: "$CI_MERGE_REQUEST_MILESTONE_$CI_COMMIT_REF_SLUG"
+  VERSION: "0.0.1"
+stages:
+  - build
+#  - test
+  - build_docker_image
+  - send_image_to_repo
+  - cleanup
+
+
+build all projects job:
+  stage: build
+  # variables:
+    # VERSION_POSTFIX: "$CI_MERGE_REQUEST_MILESTONE_$CI_COMMIT_REF_SLUG"
+  script:
+    #- cd net-core/Solutions/AllProjectsSolution
+#    - '& "$env:NUGET_PATH" restore'
+#    - '& "$env:MSBUILD_PATH"  @("/p:Configuration=Release", "/m", "/restore")'
+#    - echo "Restore nuget packages"
+#    - dotnet restore
+    - echo $CI_COMMIT_TAG ${CI_COMMIT_TAG}
+    # - echo $CI_MERGE_REQUEST_MILESTONE ${CI_MERGE_REQUEST_MILESTONE}
+    - echo $CI_PROJECT_DIR
+    - echo "Build AccountTestApi.sln"
+    - dotnet build Solutions/AccountTestApi.sln --configuration Release
+    - echo "Build RulesForOperationProceedingApi.sln"
+    - dotnet build Solutions/RulesForOperationProceedingApi.sln --configuration Release
+  only:
+    - dev
+    - staging
+    - master
+#  tags:
+#    - docker
+#    - linux 
+
+
+build docker images job:
+#  environment: production
+  stage: build_docker_image
+  variables:
+    GIT_CHECKOUT: "false"
+    # VERSION_POSTFIX: "$CI_MERGE_REQUEST_MILESTONE_$CI_COMMIT_REF_SLUG"
+    SETTINGS_CATALOG: ""
+  script:
+    - echo ${VERSION_POSTFIX}
+    -
+      if [ "$CI_COMMIT_REF_NAME" = "staging" ]; 
+      then  ${SETTINGS_CATALOG} = "staging";
+      else ${SETTINGS_CATALOG} = "production";
+        
+      fi
+
+
+    - echo "Каталог настроек " ${SETTINGS_CATALOG}   
+
+
+    - docker build -t acc_accounts-service:${VERSION_POSTFIX} -f- . <<EOF
+      FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
+
+      COPY /AccountsTestP.Api/bin/Release/netcoreapp3.0/ app/
+      COPY /docker-configuration/${SETTINGS_CATALOG}/accounts/appsettings.json app/
+
+      WORKDIR /app
+
+      ENV ASPNETCORE_URLS="http://*:815"
+      EXPOSE 815
+
+      ENTRYPOINT ["dotnet", "AccountsTestP.Api.dll"]
+
+      EOF
+
+
+    - docker build -t acc_rules-for-operation-service:${VERSION_POSTFIX} -f- . <<EOF
+      FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
+
+      COPY /RulesForOperationProceeding.Api/bin/Release/netcoreapp3.0/ app/
+      COPY /docker-configuration/${SETTINGS_CATALOG}/rules-for-operation/appsettings.json app/
+
+      WORKDIR /app
+      
+      ENV ASPNETCORE_URLS="http://*:814"
+      EXPOSE 814
+      
+      ENTRYPOINT ["dotnet", "RulesForOperationProceeding.Api.dll"]
+
+      EOF
+
+
+  only:
+    - staging
+    - master
+  when: on_success
+
+
+
+  # build docker images job:
+  #   #  environment: production
+  #     stage: build_docker_image
+  #     variables:
+  #       GIT_CHECKOUT: "false"
+  #       VERSION_POSTFIX: "$CI_MERGE_REQUEST_MILESTONE_$CI_COMMIT_REF_SLUG"
+  #     script:
+  #       - echo ${VERSION_POSTFIX}
+  #       - docker build -t acc_accounts-service:${VERSION_POSTFIX} -f- . <<EOF
+  #         FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
+    
+  #         COPY /AccountsTestP.Api/bin/Release/netcoreapp3.0/ app/
+  #         COPY /docker-configuration/production/accounts/appsettings.json app/
+    
+  #         WORKDIR /app
+    
+  #         ENV ASPNETCORE_URLS="http://*:815"
+  #         EXPOSE 815
+    
+  #         ENTRYPOINT ["dotnet", "AccountsTestP.Api.dll"]
+    
+  #         EOF
+  
+  
+  #     - docker build -t acc_rules-for-operation-service:${VERSION_POSTFIX} -f- . <<EOF
+  #       FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
+  
+  #       COPY /RulesForOperationProceeding.Api/bin/Release/netcoreapp3.0/ app/
+  #       COPY /docker-configuration/production/rules-for-operation/appsettings.json app/
+  
+  #       WORKDIR /app
+        
+  #       ENV ASPNETCORE_URLS="http://*:814"
+  #       EXPOSE 814
+        
+  #       ENTRYPOINT ["dotnet", "RulesForOperationProceeding.Api.dll"]
+  
+  #       EOF
+  
+  #     only:
+  #       - master
+  #     when: on_success
+
+
+send docker images job:
+#  environment: production
+  stage: send_image_to_repo
+  variables:
+    GIT_CHECKOUT: "false"
+    # VERSION_POSTFIX: "$CI_MERGE_REQUEST_MILESTONE_$CI_COMMIT_REF_SLUG"
+    # VERSION: "0.0.1"
+  script:
+    - echo ${VERSION_POSTFIX}
+    - echo ${VERSION}
+    
+    - docker tag acc_accounts-service:${VERSION_POSTFIX} $REGISTRY_SERVER/acc_accounts-service:${VERSION}_${VERSION_POSTFIX}
+    - docker push $REGISTRY_SERVER/acc_accounts-service:${VERSION}_${VERSION_POSTFIX}
+
+    - docker tag acc_rules-for-operation-service:${VERSION_POSTFIX} $REGISTRY_SERVER/acc_rules-for-operation-service:${VERSION}_${VERSION_POSTFIX}
+    - docker push $REGISTRY_SERVER/acc_rules-for-operation-service:${VERSION}_${VERSION_POSTFIX}
+
+  only:
+    - staging
+    - master
+  when: on_success
+
+
+cleanup_job:
+  stage: cleanup
+  variables:
+    GIT_CHECKOUT: "false"
+    # VERSION_POSTFIX: "$CI_MERGE_REQUEST_MILESTONE_$CI_COMMIT_REF_SLUG"
+  script:
+    - rm ~/runner-tmp/*${VERSION_POSTFIX}*.zip
+  when: always
+  only:
+    - staging
+    - master
