@@ -23,7 +23,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RulesForOperationProceeding
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RulesForOperationProceeding.Services", "..\RulesForOperationProceeding.Services\RulesForOperationProceeding.Services.csproj", "{81FD4CC5-F63D-404B-8A35-FCEE9127602B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RulesForOperationProceeding.Api", "..\RulesForOperationProceeding.Api\RulesForOperationProceeding.Api.csproj", "{48683C96-78D4-4366-98B5-32E96E7C9F3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RulesForOperationProceeding.Api", "..\RulesForOperationProceeding.Api\RulesForOperationProceeding.Api.csproj", "{48683C96-78D4-4366-98B5-32E96E7C9F3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Api", "..\ConvertOperationToTransfer.Api\ConvertOperationToTransfer.Api.csproj", "{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Data", "ConvertOperationToTransfer.Data\ConvertOperationToTransfer.Data.csproj", "{EEF66554-9501-4E2E-A516-74DF2D133048}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Domain", "ConvertOperationToTransfer.Domain\ConvertOperationToTransfer.Domain.csproj", "{5B19B25E-E882-41D3-9859-5A643BF81136}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Services", "ConvertOperationToTransfer.Services\ConvertOperationToTransfer.Services.csproj", "{FD115D8F-253D-4A99-99CE-02E14D66F875}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +71,22 @@ Global
 		{48683C96-78D4-4366-98B5-32E96E7C9F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48683C96-78D4-4366-98B5-32E96E7C9F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48683C96-78D4-4366-98B5-32E96E7C9F3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEF66554-9501-4E2E-A516-74DF2D133048}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEF66554-9501-4E2E-A516-74DF2D133048}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEF66554-9501-4E2E-A516-74DF2D133048}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEF66554-9501-4E2E-A516-74DF2D133048}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B19B25E-E882-41D3-9859-5A643BF81136}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B19B25E-E882-41D3-9859-5A643BF81136}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B19B25E-E882-41D3-9859-5A643BF81136}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B19B25E-E882-41D3-9859-5A643BF81136}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD115D8F-253D-4A99-99CE-02E14D66F875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD115D8F-253D-4A99-99CE-02E14D66F875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD115D8F-253D-4A99-99CE-02E14D66F875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD115D8F-253D-4A99-99CE-02E14D66F875}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
