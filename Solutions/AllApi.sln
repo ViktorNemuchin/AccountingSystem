@@ -27,11 +27,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RulesForOperationProceeding
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Api", "..\ConvertOperationToTransfer.Api\ConvertOperationToTransfer.Api.csproj", "{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Data", "ConvertOperationToTransfer.Data\ConvertOperationToTransfer.Data.csproj", "{EEF66554-9501-4E2E-A516-74DF2D133048}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Data", "..\ConvertOperationToTransfer.Data\ConvertOperationToTransfer.Data.csproj", "{EEF66554-9501-4E2E-A516-74DF2D133048}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Domain", "ConvertOperationToTransfer.Domain\ConvertOperationToTransfer.Domain.csproj", "{5B19B25E-E882-41D3-9859-5A643BF81136}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Domain", "..\ConvertOperationToTransfer.Domain\ConvertOperationToTransfer.Domain.csproj", "{5B19B25E-E882-41D3-9859-5A643BF81136}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Services", "ConvertOperationToTransfer.Services\ConvertOperationToTransfer.Services.csproj", "{FD115D8F-253D-4A99-99CE-02E14D66F875}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Services", "..\ConvertOperationToTransfer.Services\ConvertOperationToTransfer.Services.csproj", "{FD115D8F-253D-4A99-99CE-02E14D66F875}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
