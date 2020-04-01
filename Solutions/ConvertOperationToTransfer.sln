@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Api", "..\ConvertOperationToTransfer.Api\ConvertOperationToTransfer.Api.csproj", "{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Data", "..\ConvertOperationToTransfer.Data\ConvertOperationToTransfer.Data.csproj", "{EEF66554-9501-4E2E-A516-74DF2D133048}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Domain", "..\ConvertOperationToTransfer.Domain\ConvertOperationToTransfer.Domain.csproj", "{5B19B25E-E882-41D3-9859-5A643BF81136}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertOperationToTransfer.Services", "..\ConvertOperationToTransfer.Services\ConvertOperationToTransfer.Services.csproj", "{FD115D8F-253D-4A99-99CE-02E14D66F875}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72060EA0-66B3-4A4B-B3E8-FAE5BD98D8D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEF66554-9501-4E2E-A516-74DF2D133048}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEF66554-9501-4E2E-A516-74DF2D133048}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEF66554-9501-4E2E-A516-74DF2D133048}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEF66554-9501-4E2E-A516-74DF2D133048}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B19B25E-E882-41D3-9859-5A643BF81136}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B19B25E-E882-41D3-9859-5A643BF81136}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B19B25E-E882-41D3-9859-5A643BF81136}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B19B25E-E882-41D3-9859-5A643BF81136}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD115D8F-253D-4A99-99CE-02E14D66F875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD115D8F-253D-4A99-99CE-02E14D66F875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD115D8F-253D-4A99-99CE-02E14D66F875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD115D8F-253D-4A99-99CE-02E14D66F875}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E47B7345-B893-4C4D-B7FE-68E1F95D3715}
+	EndGlobalSection
+EndGlobal
