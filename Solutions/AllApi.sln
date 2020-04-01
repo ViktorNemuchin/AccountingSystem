@@ -12,7 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountsTestP.Data", "..\Ac
 		{486E5D29-5797-4992-9555-BF0CE4DE956A} = {486E5D29-5797-4992-9555-BF0CE4DE956A}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountsTestP.Service", ..\"AccountsTestP.Service\AccountsTestP.Service.csproj", "{A253099D-D1C2-4D51-91A8-F6976B8ED682}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountsTestP.Service", "..\AccountsTestP.Service\AccountsTestP.Service.csproj", "{A253099D-D1C2-4D51-91A8-F6976B8ED682}"
 	ProjectSection(ProjectDependencies) = postProject
 		{486E5D29-5797-4992-9555-BF0CE4DE956A} = {486E5D29-5797-4992-9555-BF0CE4DE956A}
 	EndProjectSection
