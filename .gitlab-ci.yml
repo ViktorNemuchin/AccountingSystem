@@ -8,7 +8,6 @@ stages:
 #  - test
   - build_docker_image
   - send_image_to_repo
-  - cleanup
 
 
 build all projects job:
@@ -46,48 +45,32 @@ build docker images job:
     SETTINGS_CATALOG: ""
   script:
     - echo ${VERSION_POSTFIX}
-    -
-      if [ "$CI_COMMIT_REF_NAME" = "staging" ]; 
-      then  ${SETTINGS_CATALOG} = "staging";
-      else ${SETTINGS_CATALOG} = "production";
-        
-      fi
+    - SETTINGS_CATALOG="";
+      if [ "$CI_COMMIT_REF_NAME" == "master" ];
+      then export SETTINGS_CATALOG="production";
+      else export SETTINGS_CATALOG="staging"; fi;
 
+    - echo "Каталог настроек " ${SETTINGS_CATALOG} or $SETTINGS_CATALOG  
 
-    - echo "Каталог настроек " ${SETTINGS_CATALOG}   
+    - echo -e "FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 \n
+      COPY /AccountsTestP.Api/bin/Release/netcoreapp3.0/ app/ \n
+      COPY /docker-configuration/$SETTINGS_CATALOG/accounts/appsettings.json app/ \n
+      WORKDIR /app \n
+      ENV ASPNETCORE_URLS="http://*:815" \n
+      EXPOSE 815 \n
+      ENTRYPOINT ["dotnet", "AccountsTestP.Api.dll"]" > dockerfile-accounts-service
 
+    - docker build -t acc_accounts-service:${VERSION_POSTFIX} -f dockerfile-accounts-service .
 
-    - docker build -t acc_accounts-service:${VERSION_POSTFIX} -f- . <<EOF
-      FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
+    - echo -e "FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 \n
+      COPY /RulesForOperationProceeding.Api/bin/Release/netcoreapp3.0/ app/ \n
+      COPY /docker-configuration/$SETTINGS_CATALOG/rules-for-operation/appsettings.json app/ \n
+      WORKDIR /app \n
+      ENV ASPNETCORE_URLS="http://*:814" \n
+      EXPOSE 814 \n
+      ENTRYPOINT ["dotnet", "RulesForOperationProceeding.Api.dll"]" > dockerfile-rules-for-operation-service
 
-      COPY /AccountsTestP.Api/bin/Release/netcoreapp3.0/ app/
-      COPY /docker-configuration/${SETTINGS_CATALOG}/accounts/appsettings.json app/
-
-      WORKDIR /app
-
-      ENV ASPNETCORE_URLS="http://*:815"
-      EXPOSE 815
-
-      ENTRYPOINT ["dotnet", "AccountsTestP.Api.dll"]
-
-      EOF
-
-
-    - docker build -t acc_rules-for-operation-service:${VERSION_POSTFIX} -f- . <<EOF
-      FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
-
-      COPY /RulesForOperationProceeding.Api/bin/Release/netcoreapp3.0/ app/
-      COPY /docker-configuration/${SETTINGS_CATALOG}/rules-for-operation/appsettings.json app/
-
-      WORKDIR /app
-      
-      ENV ASPNETCORE_URLS="http://*:814"
-      EXPOSE 814
-      
-      ENTRYPOINT ["dotnet", "RulesForOperationProceeding.Api.dll"]
-
-      EOF
-
+    - docker build -t acc_rules-for-operation-service:${VERSION_POSTFIX} -f dockerfile-rules-for-operation-service .
 
   only:
     - staging
@@ -161,16 +144,3 @@ send docker images job:
     - staging
     - master
   when: on_success
-
-
-cleanup_job:
-  stage: cleanup
-  variables:
-    GIT_CHECKOUT: "false"
-    # VERSION_POSTFIX: "$CI_MERGE_REQUEST_MILESTONE_$CI_COMMIT_REF_SLUG"
-  script:
-    - rm ~/runner-tmp/*${VERSION_POSTFIX}*.zip
-  when: always
-  only:
-    - staging
-    - master
