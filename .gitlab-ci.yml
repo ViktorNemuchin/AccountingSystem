@@ -38,7 +38,8 @@ build all projects job:
 
 unit test job:
   stage: test
-  # variables:
+  variables:
+    GIT_CHECKOUT: "false"
     # VERSION_POSTFIX: "$CI_MERGE_REQUEST_MILESTONE_$CI_COMMIT_REF_SLUG"
   script:
     - echo "Запуск unit-тестов"
