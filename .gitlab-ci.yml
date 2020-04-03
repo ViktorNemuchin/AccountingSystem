@@ -5,7 +5,7 @@ variables:
   VERSION: "0.0.1"
 stages:
   - build
-#  - test
+  - test
   - build_docker_image
   - send_image_to_repo
 
@@ -34,6 +34,20 @@ build all projects job:
 #  tags:
 #    - docker
 #    - linux 
+
+
+unit test job:
+  stage: test
+  # variables:
+    # VERSION_POSTFIX: "$CI_MERGE_REQUEST_MILESTONE_$CI_COMMIT_REF_SLUG"
+  script:
+    - echo "Запуск unit-тестов"
+    # - cd SLN_OR_PROJECT_PATH
+    # - dotnet test SLN_OR_PROJECT_PATH
+  only:
+    - dev
+    - staging
+    - master
 
 
 build docker images job:
@@ -76,51 +90,6 @@ build docker images job:
     - staging
     - master
   when: on_success
-
-
-
-  # build docker images job:
-  #   #  environment: production
-  #     stage: build_docker_image
-  #     variables:
-  #       GIT_CHECKOUT: "false"
-  #       VERSION_POSTFIX: "$CI_MERGE_REQUEST_MILESTONE_$CI_COMMIT_REF_SLUG"
-  #     script:
-  #       - echo ${VERSION_POSTFIX}
-  #       - docker build -t acc_accounts-service:${VERSION_POSTFIX} -f- . <<EOF
-  #         FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
-    
-  #         COPY /AccountsTestP.Api/bin/Release/netcoreapp3.0/ app/
-  #         COPY /docker-configuration/production/accounts/appsettings.json app/
-    
-  #         WORKDIR /app
-    
-  #         ENV ASPNETCORE_URLS="http://*:815"
-  #         EXPOSE 815
-    
-  #         ENTRYPOINT ["dotnet", "AccountsTestP.Api.dll"]
-    
-  #         EOF
-  
-  
-  #     - docker build -t acc_rules-for-operation-service:${VERSION_POSTFIX} -f- . <<EOF
-  #       FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
-  
-  #       COPY /RulesForOperationProceeding.Api/bin/Release/netcoreapp3.0/ app/
-  #       COPY /docker-configuration/production/rules-for-operation/appsettings.json app/
-  
-  #       WORKDIR /app
-        
-  #       ENV ASPNETCORE_URLS="http://*:814"
-  #       EXPOSE 814
-        
-  #       ENTRYPOINT ["dotnet", "RulesForOperationProceeding.Api.dll"]
-  
-  #       EOF
-  
-  #     only:
-  #       - master
-  #     when: on_success
 
 
 send docker images job:
