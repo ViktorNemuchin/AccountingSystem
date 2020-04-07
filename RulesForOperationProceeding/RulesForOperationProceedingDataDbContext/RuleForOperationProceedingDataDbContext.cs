@@ -30,12 +30,12 @@ namespace RulesForOperationProceeding.Data.RulesForOperationProceedingDbContext
         public DbSet<RulesModel> Rules { get; set; }
 
         /// <summary>
-        /// Подключение к параметрами типов операций
+        /// Подключение к таблице параметров типов операций
         /// </summary>
         public DbSet<OperationParameterModel> OperationParameters { get; set; }
 
         /// <summary>
-        /// Метод конфигурации методанных для объектов таблице
+        /// Метод конфигурации мета данных для таблице
         /// </summary>
         /// <param name="modelBuilder"> Конструктор связей модели</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)

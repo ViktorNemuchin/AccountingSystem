@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConvertOperationToTransfer.Data.IRepository
 {
+
     public interface IOperationParameterRepository:IBaseRepository
     {
         public IAsyncEnumerable<OperationParameterModel> GetOperationParametersByOperationId(Guid operationId);
