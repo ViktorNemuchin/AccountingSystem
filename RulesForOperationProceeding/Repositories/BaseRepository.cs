@@ -9,24 +9,43 @@ using System.Threading.Tasks;
 
 namespace RulesForOperationProceeding.Data.Repositories
 {
+    /// <summary>
+    /// Класс базовых методов работы с БД
+    /// </summary>
     public class BaseRepository: IBaseRepository
     {
+        /// <summary>
+        /// Экземпляр контекста подключение к БД
+        /// </summary>
         protected readonly RulesForOperationProceedingDataDbContext _context;
+        /// <summary>
+        /// Конструктор класса базовых методов
+        /// </summary>
+        /// <param name="context">Контекст подключения к БД</param>
         public BaseRepository(RulesForOperationProceedingDataDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(); ;
         }
+        /// <summary>
+        /// Освобождение ресурсов от подключения к БД и результатлв выполнения методов  
+        /// </summary>
         public void Dispose()
         {
             _context?.Dispose();
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Сохрание изменений в базе данных синхронно
+        /// </summary>
         public void SaveChanges()
         {
             _context.SaveChanges();
         }
-
+        /// <summary>
+        /// Сохранение изменений в базе данных ассмнхронно
+        /// </summary>
+        /// <returns></returns>
         public async Task<int> SaveChangesAsync()
         {
             try
