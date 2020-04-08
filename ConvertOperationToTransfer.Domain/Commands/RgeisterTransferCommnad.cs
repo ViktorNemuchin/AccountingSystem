@@ -4,7 +4,10 @@ using System.Text;
 
 namespace ConvertOperationToTransfer.Domain.Commands
 {
-    class RgeisterTransferCommnad
+   /// <summary>
+   /// Добавление првоводки
+   /// </summary>
+    public class RegeisterTransferCommnad
     {
     }
 }

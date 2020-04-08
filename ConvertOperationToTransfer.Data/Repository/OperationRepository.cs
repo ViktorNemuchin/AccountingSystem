@@ -17,6 +17,7 @@ namespace ConvertOperationToTransfer.Data.Repository
         { }
 
         public async Task<OperationModel> GetOperationById(Guid operationId) => await _context.Operations.AsNoTracking().Where(x => x.Id == operationId).FirstOrDefaultAsync();
+        public IAsyncEnumerable<OperationModel> GetAllOperations() => _context.Operations.AsAsyncEnumerable();
         public async Task AddOperation(OperationModel operation) => await _context.Operations.AddAsync(operation);
         public void UpdateOperation(OperationModel operation) => _context.Operations.Update(operation);
         public void UpdateOperations(List<OperationModel> operations) => _context.Operations.UpdateRange(operations);
